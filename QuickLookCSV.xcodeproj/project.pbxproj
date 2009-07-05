@@ -14,6 +14,7 @@
 		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
 		EE77BE9C0FFEB3EA008B09DE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EE77BE9B0FFEB3EA008B09DE /* Localizable.strings */; };
+		EE883107100141B9005590AE /* INSTALL.rtf in Resources */ = {isa = PBXBuildFile; fileRef = EE883106100141B9005590AE /* INSTALL.rtf */; };
 		EEB3ED1C0FFE217E00B7462F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB3ED1B0FFE217E00B7462F /* Cocoa.framework */; };
 		EEB3EDCF0FFE38D800B7462F /* CSVDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = EEB3EDCD0FFE38D800B7462F /* CSVDocument.h */; };
 		EEB3EDD00FFE38D800B7462F /* CSVDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB3EDCE0FFE38D800B7462F /* CSVDocument.m */; };
@@ -35,6 +36,7 @@
 		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		EE77BE4B0FFEB207008B09DE /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EE77BE9D0FFEB3F1008B09DE /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EE883106100141B9005590AE /* INSTALL.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = INSTALL.rtf; sourceTree = "<group>"; };
 		EEB3ED1B0FFE217E00B7462F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		EEB3EDCD0FFE38D800B7462F /* CSVDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVDocument.h; sourceTree = "<group>"; };
 		EEB3EDCE0FFE38D800B7462F /* CSVDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVDocument.m; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EE883106100141B9005590AE /* INSTALL.rtf */,
 				EE77BE9B0FFEB3EA008B09DE /* Localizable.strings */,
 				EEB3EE850FFE513200B7462F /* Style.css */,
 				8D576317048677EA00EA77CD /* Info.plist */,
@@ -177,6 +180,7 @@
 				8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */,
 				EEB3EE860FFE513200B7462F /* Style.css in Resources */,
 				EE77BE9C0FFEB3EA008B09DE /* Localizable.strings in Resources */,
+				EE883107100141B9005590AE /* INSTALL.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
