@@ -48,12 +48,16 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		NSUInteger numRows = ceilf(thumbnailSize / rowHeight);
 		
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
-		[csvDoc numRowsFromCSVString:fileString maxRows:numRows error:NULL];
+		NSUInteger gotRows = [csvDoc numRowsFromCSVString:fileString maxRows:numRows error:NULL];
 		
 		
 		// Draw an icon if still interested in the thumbnail
 		if(false == QLThumbnailRequestIsCancelled(thumbnail)) {
-			CGRect myBounds = CGRectMake(0.0, 0.0, thumbnailSize, thumbnailSize);
+			CGFloat startY = 0.0;
+			if(gotRows < numRows) {
+				startY = thumbnailSize - gotRows * rowHeight;
+			}
+			CGRect myBounds = CGRectMake(0.0, startY, thumbnailSize, thumbnailSize);
 			CGContextRef context = QLThumbnailRequestCreateContext(thumbnail, myBounds.size, false, NULL);
 			
 			// Draw a mini table
@@ -81,12 +85,15 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 													  blackColor, NSForegroundColorAttributeName, nil];
 					
 					CGFloat textXPadding = 5.0;
-					CGFloat cellX = -2 * textXPadding;
+					CGFloat cellX = 0.0;
 					CGFloat maxCellStringWidth = 0.0;
 					
 					// We loop each cell, row by row for each column
 					for(NSString *colKey in csvDoc.columnKeys) {
-						cellX += maxCellStringWidth + 2 * textXPadding;
+						if(cellX > myBounds.size.width) {
+							break;
+						}
+						
 						CGRect rowRect = CGRectMake(cellX, 0.0, myBounds.size.width - cellX, rowHeight);
 						maxCellStringWidth = 0.0;
 						BOOL altRow = NO;
@@ -117,6 +124,17 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 							altRow = !altRow;
 							rowRect.origin.y += rowHeight;
 						}
+						
+						cellX += maxCellStringWidth + 2 * textXPadding;
+					}
+					
+					// Crop the thumbnail if we didn't use the whole width
+					if(cellX < myBounds.size.width) {
+						myBounds.size.width -= cellX;
+						CGRect clearRect = CGRectMake(cellX, 0.0, myBounds.size.width, myBounds.size.height);
+						CGContextClearRect(context, clearRect);
+						
+						// we should now center the thumbnail in our context or crop the context somehow...
 					}
 				}
 				
