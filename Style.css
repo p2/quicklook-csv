@@ -1,0 +1,17 @@
+/* 
+   Style.css
+   QuickLookCSV
+
+   Created by Pascal Pfiffner on 03.07.09.
+   This sourcecode is released under the Apache License, Version 2.0
+   http://www.apache.org/licenses/LICENSE-2.0.html 
+ */
+
+body { margin:20px; font:small normal 'Helvetica Neue', sans-serif; background-color:rgb(242,242,242); background-color:rgb(205,205,205); }
+h1 { margin:0.5em 2px; font-size:1.8em; text-shadow:rgba(0,0,0,0.5) 0 3px 8px; }
+table { min-width:100%; border:1px solid rgb(170,170,170); border-collapse:collapse; }
+tr { background-color:white; }
+td { padding:0.2em 0.4em; font-size:small; border:1px solid rgb(170,170,170); border-width:0 1px; }
+.file_info { margin:0.5em 2px; color:rgb(20,20,20); text-shadow:rgba(255,255,255,0.8) 0 1px 0; }
+.alt_row { background-color:rgb(230,230,230); }
+.truncated_rows { margin:0.5em 2px; color:rgb(20,20,20); text-shadow:rgba(255,255,255,0.8) 0 1px 0; }
