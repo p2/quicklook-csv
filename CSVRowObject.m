@@ -43,15 +43,26 @@
 
 
 #pragma mark Returning Columns
-- (NSString *) columns:(NSArray *)columnKeys separatedByString:(NSString *)sepString
+- (NSString *) columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString
 {
 	NSString *rowString = nil;
 	
-	if(nil != columnKeys && nil != columns) {
+	if((nil != columnKeys) && (nil != columns)) {
 		rowString = [[columns objectsForKeys:columnKeys notFoundMarker:@""] componentsJoinedByString:sepString];
 	}
 	
 	return rowString;
+}
+
+- (NSString *) columnForKey:(NSString *)columnKey
+{
+	NSString *cellString = nil;
+	
+	if((nil != columnKey) && (nil != columns)) {
+		cellString = [columns objectForKey:columnKey];
+	}
+	
+	return cellString;
 }
 
 

@@ -1,5 +1,5 @@
 //
-//  CSVObject.h
+//  CSVDocument.h
 //  QuickLookCSV
 //
 //  Created by Pascal Pfiffner on 03.07.09.
@@ -10,7 +10,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface CSVObject : NSObject {
+@interface CSVDocument : NSObject {
 	NSString *separator;
 	NSArray *rows;
 	NSArray *columnKeys;
@@ -20,9 +20,11 @@
 @property (nonatomic, retain) NSArray *rows;
 @property (nonatomic, retain) NSArray *columnKeys;
 
-+ (CSVObject *) csvObject;
++ (CSVDocument *) csvDoc;
 - (NSUInteger) numRowsFromCSVString:(NSString *)string error:(NSError **)error;
 - (NSUInteger) numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error;
+
+- (BOOL) isFirstColumn:(NSString *)columnKey;
 
 
 @end

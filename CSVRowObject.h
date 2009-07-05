@@ -19,7 +19,7 @@
 + (CSVRowObject *) row;
 + (CSVRowObject *) rowFromDict:(NSMutableDictionary *)dict;
 
-- (NSString *) columns:(NSArray *)columnKeys separatedByString:(NSString *)sepString;
-
+- (NSString *) columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString;
+- (NSString *) columnForKey:(NSString *)columnKey;
 
 @end

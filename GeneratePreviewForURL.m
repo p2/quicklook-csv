@@ -11,7 +11,7 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 #import <Cocoa/Cocoa.h>
-#import "CSVObject.h"
+#import "CSVDocument.h"
 #import "CSVRowObject.h"
 
 #define MAX_ROWS 200
@@ -33,7 +33,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSURL *myURL = (NSURL *)url;
 	
-	// Load document data; guess file encoding using `file --brief --mime` ? Not for now...
+	// Load document data using NSStrings house methods
+	// For huge files, maybe guess file encoding using `file --brief --mime` and use NSFileHandle? Not for now...
 	NSStringEncoding stringEncoding;
 	NSString *fileString = [NSString stringWithContentsOfURL:myURL usedEncoding:&stringEncoding error:&theErr];
 	
@@ -56,13 +57,13 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	
 	// Parse the data if still interested in the preview
 	if(false == QLPreviewRequestIsCancelled(preview)) {
-		CSVObject *csvObject = [CSVObject csvObject];
-		NSUInteger numRowsParsed = [csvObject numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
+		CSVDocument *csvDoc = [CSVDocument csvDoc];
+		NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
 		
 		
 		// Create HTML of the data if still interested in the preview
 		if(false == QLPreviewRequestIsCancelled(preview)) {
-			NSBundle *myBundle = [NSBundle bundleForClass:[CSVObject class]];
+			NSBundle *myBundle = [NSBundle bundleForClass:[CSVDocument class]];
 			
 			NSString *cssPath = [myBundle pathForResource:@"Style" ofType:@"css"];
 			NSString *css = [[NSString alloc] initWithContentsOfFile:cssPath encoding:NSUTF8StringEncoding error:NULL];
@@ -81,14 +82,19 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				[css release];
 			}
 			[html appendFormat:@"</style></head><body><h1>%@</h1>", fileName];
-			[html appendFormat:@"<div class=\"file_info\">%@</div>", path];
-			[html appendFormat:@"<div class=\"file_info\">%s, %s</div><table>", formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]), humanReadableFileEncoding(stringEncoding)];
+			//[html appendFormat:@"<div class=\"file_info\">%@</div>", path];
+			[html appendFormat:@"<div class=\"file_info\"><b>%s</b>, %s, <b>%i</b> %@</div><table>",
+									formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]),
+									humanReadableFileEncoding(stringEncoding),
+									[csvDoc.columnKeys count],
+									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil)
+			];
 			
 			// add the table rows
 			BOOL altRow = NO;
-			for(CSVRowObject *row in csvObject.rows) {
+			for(CSVRowObject *row in csvDoc.rows) {
 				[html appendFormat:@"<tr%@><td>", altRow ? @" class=\"alt_row\"" : @""];
-				[html appendString:[row columns:csvObject.columnKeys separatedByString:@"</td><td>"]];
+				[html appendString:[row columns:csvDoc.columnKeys combinedByString:@"</td><td>"]];
 				[html appendString:@"</td></tr>\n"];
 				
 				altRow = !altRow;
@@ -98,8 +104,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			
 			// not all rows were parsed, show hint
 			if(numRowsParsed > MAX_ROWS) {
-				NSString *rowsHint = [NSString stringWithFormat:@"Only the first %i rows are being displayed", MAX_ROWS];
-				[html appendFormat:@"<div class=\"truncated_rows\">%@</div>", [myBundle localizedStringForKey:rowsHint value:rowsHint table:nil]];
+				NSString *rowsHint = [NSString stringWithFormat:NSLocalizedString(@"Only the first %i rows are being displayed", nil), MAX_ROWS];
+				[html appendFormat:@"<div class=\"truncated_rows\">%@</div>", rowsHint];
 			}
 			[html appendString:@"</html>"];
 			

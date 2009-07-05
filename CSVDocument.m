@@ -1,5 +1,5 @@
 //
-//  CSVObject.m
+//  CSVDocument.m
 //  QuickLookCSV
 //
 //  Created by Pascal Pfiffner on 03.07.09.
@@ -7,11 +7,11 @@
 //  http://www.apache.org/licenses/LICENSE-2.0.html
 //  
 
-#import "CSVObject.h"
+#import "CSVDocument.h"
 #import "CSVRowObject.h"
 
 
-@implementation CSVObject
+@implementation CSVDocument
 
 @synthesize separator, rows, columnKeys;
 
@@ -26,9 +26,9 @@
 	return self;
 }
 
-+ (CSVObject *) csvObject
++ (CSVDocument *) csvDoc
 {
-	return [[[CSVObject alloc] init] autorelease];
+	return [[[CSVDocument alloc] init] autorelease];
 }
 
 - (void) dealloc
@@ -198,6 +198,19 @@
 	}
 	
 	return numRows;
+}
+#pragma mark -
+
+
+
+#pragma mark Document Properties
+- (BOOL) isFirstColumn:(NSString *)columnKey
+{
+	if((nil != columnKeys) && ([columnKeys count] > 0)) {
+		return [columnKey isEqualToString:[columnKeys objectAtIndex:0]];
+	}
+	
+	return NO;
 }
 
 

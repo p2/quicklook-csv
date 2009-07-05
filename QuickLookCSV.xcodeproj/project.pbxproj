@@ -15,8 +15,8 @@
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
 		EE77BE9C0FFEB3EA008B09DE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EE77BE9B0FFEB3EA008B09DE /* Localizable.strings */; };
 		EEB3ED1C0FFE217E00B7462F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB3ED1B0FFE217E00B7462F /* Cocoa.framework */; };
-		EEB3EDCF0FFE38D800B7462F /* CSVObject.h in Headers */ = {isa = PBXBuildFile; fileRef = EEB3EDCD0FFE38D800B7462F /* CSVObject.h */; };
-		EEB3EDD00FFE38D800B7462F /* CSVObject.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB3EDCE0FFE38D800B7462F /* CSVObject.m */; };
+		EEB3EDCF0FFE38D800B7462F /* CSVDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = EEB3EDCD0FFE38D800B7462F /* CSVDocument.h */; };
+		EEB3EDD00FFE38D800B7462F /* CSVDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB3EDCE0FFE38D800B7462F /* CSVDocument.m */; };
 		EEB3EDD50FFE3B7F00B7462F /* CSVRowObject.h in Headers */ = {isa = PBXBuildFile; fileRef = EEB3EDD30FFE3B7F00B7462F /* CSVRowObject.h */; };
 		EEB3EDD60FFE3B8000B7462F /* CSVRowObject.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB3EDD40FFE3B7F00B7462F /* CSVRowObject.m */; };
 		EEB3EE860FFE513200B7462F /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = EEB3EE850FFE513200B7462F /* Style.css */; };
@@ -36,11 +36,10 @@
 		EE77BE4B0FFEB207008B09DE /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EE77BE9D0FFEB3F1008B09DE /* German */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = German; path = German.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EEB3ED1B0FFE217E00B7462F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		EEB3EDCD0FFE38D800B7462F /* CSVObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVObject.h; sourceTree = "<group>"; };
-		EEB3EDCE0FFE38D800B7462F /* CSVObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVObject.m; sourceTree = "<group>"; };
+		EEB3EDCD0FFE38D800B7462F /* CSVDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVDocument.h; sourceTree = "<group>"; };
+		EEB3EDCE0FFE38D800B7462F /* CSVDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVDocument.m; sourceTree = "<group>"; };
 		EEB3EDD30FFE3B7F00B7462F /* CSVRowObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVRowObject.h; sourceTree = "<group>"; };
 		EEB3EDD40FFE3B7F00B7462F /* CSVRowObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVRowObject.m; sourceTree = "<group>"; };
-		EEB3EE820FFE50FE00B7462F /* test.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.csv; sourceTree = "<group>"; };
 		EEB3EE850FFE513200B7462F /* Style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
 		F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = /System/Library/Frameworks/QuickLook.framework; sourceTree = "<absolute>"; };
@@ -90,7 +89,6 @@
 			children = (
 				EE77BE9B0FFEB3EA008B09DE /* Localizable.strings */,
 				EEB3EE850FFE513200B7462F /* Style.css */,
-				EEB3EE820FFE50FE00B7462F /* test.csv */,
 				8D576317048677EA00EA77CD /* Info.plist */,
 				8D5B49A704867FD3000E48DA /* InfoPlist.strings */,
 			);
@@ -103,8 +101,8 @@
 				61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.m */,
 				2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.m */,
 				08FB77B6FE84183AC02AAC07 /* main.c */,
-				EEB3EDCD0FFE38D800B7462F /* CSVObject.h */,
-				EEB3EDCE0FFE38D800B7462F /* CSVObject.m */,
+				EEB3EDCD0FFE38D800B7462F /* CSVDocument.h */,
+				EEB3EDCE0FFE38D800B7462F /* CSVDocument.m */,
 				EEB3EDD30FFE3B7F00B7462F /* CSVRowObject.h */,
 				EEB3EDD40FFE3B7F00B7462F /* CSVRowObject.m */,
 			);
@@ -126,7 +124,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EEB3EDCF0FFE38D800B7462F /* CSVObject.h in Headers */,
+				EEB3EDCF0FFE38D800B7462F /* CSVDocument.h in Headers */,
 				EEB3EDD50FFE3B7F00B7462F /* CSVRowObject.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,7 +200,7 @@
 				8D576312048677EA00EA77CD /* main.c in Sources */,
 				2C05A19C06CAA52B00D84F6F /* GeneratePreviewForURL.m in Sources */,
 				61E3BCFB0870B4F2002186A0 /* GenerateThumbnailForURL.m in Sources */,
-				EEB3EDD00FFE38D800B7462F /* CSVObject.m in Sources */,
+				EEB3EDD00FFE38D800B7462F /* CSVDocument.m in Sources */,
 				EEB3EDD60FFE3B8000B7462F /* CSVRowObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
