@@ -8,7 +8,6 @@
  */
 
 body { margin:20px; font:small normal 'Helvetica Neue', sans-serif; background-color:rgb(242,242,242); background-color:rgb(205,205,205); }
-h1 { margin:0.5em 2px; font-size:1.8em; text-shadow:rgba(0,0,0,0.5) 0 3px 8px; }
 table { min-width:100%; border:1px solid rgb(170,170,170); border-collapse:collapse; }
 tr { background-color:white; }
 td { padding:0.2em 0.4em; vertical-align:top; font-size:small; border:1px solid rgb(170,170,170); border-width:0 1px; }

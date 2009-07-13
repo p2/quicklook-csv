@@ -5,6 +5,10 @@
 #import "CSVDocument.h"
 #import "CSVRowObject.h"
 
+#define MIN_WIDTH 40.0
+
+static CGContextRef createRGBABitmapContext(CGSize pixelSize);
+
 
 /* -----------------------------------------------------------------------------
     Generate a thumbnail for file
@@ -52,21 +56,16 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		
 		
 		// Draw an icon if still interested in the thumbnail
-		if(false == QLThumbnailRequestIsCancelled(thumbnail)) {
-			CGFloat startY = 0.0;
-			if(gotRows < numRows) {
-				startY = thumbnailSize - gotRows * rowHeight;
-			}
-			CGRect myBounds = CGRectMake(0.0, startY, thumbnailSize, thumbnailSize);
-			CGContextRef context = QLThumbnailRequestCreateContext(thumbnail, myBounds.size, false, NULL);
+		if((gotRows > 0) && (false == QLThumbnailRequestIsCancelled(thumbnail))) {
+			CGRect maxBounds = CGRectMake(0.0, 0.0, thumbnailSize, thumbnailSize);
+			CGRect usedBounds = CGRectMake(0.0, 0.0, thumbnailSize, thumbnailSize);
 			
-			// Draw a mini table
+			CGContextRef context = createRGBABitmapContext(maxBounds.size);
 			if(context) {
-				CGContextSaveGState(context);
 				
 				// Flip CoreGraphics coordinate system
 				CGContextScaleCTM(context, 1.0, -1.0);
-				CGContextTranslateCTM(context, 0, -myBounds.size.height);		
+				CGContextTranslateCTM(context, 0, -maxBounds.size.height);		
 				
 				// Create colors
 				CGColorRef borderColor = CGColorCreateGenericRGB(0.67, 0.67, 0.67, 1.0);
@@ -90,20 +89,26 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 					
 					// We loop each cell, row by row for each column
 					for(NSString *colKey in csvDoc.columnKeys) {
-						if(cellX > myBounds.size.width) {
+						if(cellX > maxBounds.size.width) {
 							break;
 						}
 						
-						CGRect rowRect = CGRectMake(cellX, 0.0, myBounds.size.width - cellX, rowHeight);
+						CGRect rowRect = CGRectMake(cellX, 0.0, maxBounds.size.width - cellX, rowHeight);
 						maxCellStringWidth = 0.0;
 						BOOL altRow = NO;
+						BOOL isFirstColumn = [csvDoc isFirstColumn:colKey];
 						
 						// loop rows
 						for(CSVRowObject *row in csvDoc.rows) {
-							CGContextSetFillColorWithColor(context, altRow ? altRowBG : rowBG);
-							CGContextFillRect(context, rowRect);
 							
-							if(![csvDoc isFirstColumn:colKey]) {
+							// Draw background
+							if(isFirstColumn) {
+								CGContextSetFillColorWithColor(context, altRow ? altRowBG : rowBG);
+								CGContextFillRect(context, rowRect);
+							}
+							
+							// Draw border
+							else {
 								CGContextMoveToPoint(context, cellX + borderWidth / 2, rowRect.origin.y);
 								CGContextAddLineToPoint(context, cellX + borderWidth / 2, rowRect.origin.y + rowRect.size.height);
 								CGContextSetStrokeColorWithColor(context, borderColor);
@@ -128,13 +133,14 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 						cellX += maxCellStringWidth + 2 * textXPadding;
 					}
 					
-					// Crop the thumbnail if we didn't use the whole width
-					if(cellX < myBounds.size.width) {
-						myBounds.size.width -= cellX;
-						CGRect clearRect = CGRectMake(cellX, 0.0, myBounds.size.width, myBounds.size.height);
-						CGContextClearRect(context, clearRect);
-						
-						// we should now center the thumbnail in our context or crop the context somehow...
+					// adjust usedBounds.size.width...
+					if(cellX < maxBounds.size.width) {
+						usedBounds.size.width = (cellX < MIN_WIDTH) ? MIN_WIDTH : cellX;
+					}
+					
+					// ...and usedBounds.size.height
+					if(gotRows < numRows) {
+						usedBounds.size.height = gotRows * rowHeight;
 					}
 				}
 				
@@ -142,10 +148,23 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				CGColorRelease(rowBG);
 				CGColorRelease(altRowBG);
 				
-				// Clean up
-				CGContextRestoreGState(context);
-				QLThumbnailRequestFlushContext(thumbnail, context);
+				// Draw the image to the thumbnail request
+				CGContextRef thumbContext = QLThumbnailRequestCreateContext(thumbnail, usedBounds.size, false, NULL);
+				
+				CGImageRef fullImage = CGBitmapContextCreateImage(context);
+				CGImageRef usedImage = CGImageCreateWithImageInRect(fullImage, usedBounds);
+				CGImageRelease(fullImage);
+				CGContextDrawImage(thumbContext, usedBounds, usedImage);
+				CGImageRelease(usedImage);
+				
+				// we no longer need the bitmap data; free
+				char *bitmapData = CGBitmapContextGetData(context);
+				if(bitmapData) {
+					free(bitmapData);
+				}
 				CFRelease(context);
+				
+				QLThumbnailRequestFlushContext(thumbnail, thumbContext);
 			}
 		}
 	}
@@ -157,5 +176,38 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 
 void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail)
 {
+}
+#pragma mark -
+
+
+
+#pragma mark Creating a bitmap context
+static CGContextRef createRGBABitmapContext(CGSize pixelSize)
+{
+	NSUInteger width = pixelSize.width;
+	NSUInteger height = pixelSize.height;
+	NSUInteger bitmapBytesPerRow = width * 4;				// 1 byte per component r g b a
+	NSUInteger bitmapBytes = bitmapBytesPerRow * height;
+	
+	// allocate needed bytes
+	void *bitmapData = malloc(bitmapBytes);
+	if(NULL == bitmapData) {
+		fprintf(stderr, "Oops, could not allocate bitmap data!");
+		return NULL;
+	}
+	
+	// create the context
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	CGContextRef context = CGBitmapContextCreate(bitmapData, width, height, 8, bitmapBytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
+	CGColorSpaceRelease(colorSpace);
+	
+	// context creation fail
+	if(NULL == context) {
+		free(bitmapData);
+		fprintf(stderr, "Oops, could not create the context!");
+		return NULL;
+	}
+	
+	return context;
 }
 

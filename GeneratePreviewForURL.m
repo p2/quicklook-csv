@@ -69,7 +69,6 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			NSString *css = [[NSString alloc] initWithContentsOfFile:cssPath encoding:NSUTF8StringEncoding error:NULL];
 			
 			NSString *path = [myURL path];
-			NSString *fileName = [[path componentsSeparatedByString:@"/"] lastObject];
 			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
 			
 			// compose the html
@@ -81,9 +80,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				[html appendString:css];
 				[css release];
 			}
-			[html appendFormat:@"</style></head><body><h1>%@</h1>", fileName];
-			//[html appendFormat:@"<div class=\"file_info\">%@</div>", path];
-			[html appendFormat:@"<div class=\"file_info\"><b>%s</b>, %s, <b>%i</b> %@</div><table>",
+			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%s</b>, %s, <b>%i</b> %@</div><table>",
 									formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]),
 									humanReadableFileEncoding(stringEncoding),
 									[csvDoc.columnKeys count],
