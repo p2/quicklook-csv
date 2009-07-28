@@ -5,9 +5,13 @@
 #import "CSVDocument.h"
 #import "CSVRowObject.h"
 
-#define MIN_WIDTH 40.0
+#define THUMB_SIZE 256.0
+#define MIN_WIDTH 0.375			// fraction of height
+#define MIN_HEIGHT 0.375		// fraction of width
+#define BADGE @"CSV"
 
 static CGContextRef createRGBABitmapContext(CGSize pixelSize);
+//static CGContextRef createVectorContext(CGSize pixelSize)
 
 
 /* -----------------------------------------------------------------------------
@@ -46,10 +50,9 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 	
 	// Parse the data if still interested in the thumbnail
 	if(false == QLThumbnailRequestIsCancelled(thumbnail)) {
-		CGFloat thumbnailSize = 256.0;
 		CGFloat fontSize = 12.0;
 		CGFloat rowHeight = 18.0;
-		NSUInteger numRows = ceilf(thumbnailSize / rowHeight);
+		NSUInteger numRows = ceilf(THUMB_SIZE / rowHeight);
 		
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
 		NSUInteger gotRows = [csvDoc numRowsFromCSVString:fileString maxRows:numRows error:NULL];
@@ -57,11 +60,14 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		
 		// Draw an icon if still interested in the thumbnail
 		if((gotRows > 0) && (false == QLThumbnailRequestIsCancelled(thumbnail))) {
-			CGRect maxBounds = CGRectMake(0.0, 0.0, thumbnailSize, thumbnailSize);
-			CGRect usedBounds = CGRectMake(0.0, 0.0, thumbnailSize, thumbnailSize);
+			CGRect maxBounds = CGRectMake(0.0, 0.0, THUMB_SIZE, THUMB_SIZE);
+			CGRect usedBounds = CGRectMake(0.0, 0.0, 0.0, 0.0);
+			CGFloat badgeReferenceSize = THUMB_SIZE;
 			
 			CGContextRef context = createRGBABitmapContext(maxBounds.size);
+			//CGContextRef context = createVectorContext(maxBounds.size);
 			if(context) {
+				CGPDFContextBeginPage(context, NULL);
 				
 				// Flip CoreGraphics coordinate system
 				CGContextScaleCTM(context, 1.0, -1.0);
@@ -75,9 +81,9 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				CGFloat borderWidth = 1.0;
 				
 				// We use NSGraphicsContext for the strings due to easier string drawing :P
-				NSGraphicsContext* nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:(void *)context flipped:YES];
+				NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:(void *)context flipped:YES];
 				[NSGraphicsContext setCurrentContext:nsContext];
-				if(nsContext) {
+				if(nil != nsContext) {
 					NSFont *myFont = [NSFont systemFontOfSize:fontSize];
 					NSColor *blackColor = [NSColor blackColor];
 					NSDictionary *stringAttributes = [NSDictionary dictionaryWithObjectsAndKeys:myFont, NSFontAttributeName,
@@ -95,18 +101,22 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 						
 						CGRect rowRect = CGRectMake(cellX, 0.0, maxBounds.size.width - cellX, rowHeight);
 						maxCellStringWidth = 0.0;
-						BOOL altRow = NO;
 						BOOL isFirstColumn = [csvDoc isFirstColumn:colKey];
+						BOOL altRow = NO;
 						
 						// loop rows
 						for(CSVRowObject *row in csvDoc.rows) {
 							
+							
+							// *****
 							// Draw background
 							if(isFirstColumn) {
 								CGContextSetFillColorWithColor(context, altRow ? altRowBG : rowBG);
 								CGContextFillRect(context, rowRect);
 							}
 							
+							
+							// *****
 							// Draw border
 							else {
 								CGContextMoveToPoint(context, cellX + borderWidth / 2, rowRect.origin.y);
@@ -115,6 +125,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 								CGContextStrokePath(context);
 							}
 							
+							
+							// *****
 							// Draw text
 							NSRect textRect = NSRectFromCGRect(rowRect);
 							textRect.size.width -= 2 * textXPadding;
@@ -128,19 +140,39 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 							}
 							altRow = !altRow;
 							rowRect.origin.y += rowHeight;
+							
+							// adjust usedBounds
+							if(usedBounds.size.height < rowRect.origin.y) {
+								usedBounds.size.height = rowRect.origin.y;
+							}
 						}
 						
 						cellX += maxCellStringWidth + 2 * textXPadding;
+						usedBounds.size.width = cellX;
 					}
 					
-					// adjust usedBounds.size.width...
-					if(cellX < maxBounds.size.width) {
-						usedBounds.size.width = (cellX < MIN_WIDTH) ? MIN_WIDTH : cellX;
-					}
-					
-					// ...and usedBounds.size.height
-					if(gotRows < numRows) {
-						usedBounds.size.height = gotRows * rowHeight;
+					// scale usedBounds to fill at least either width or height
+					if(usedBounds.size.width < THUMB_SIZE || usedBounds.size.height < THUMB_SIZE) {
+						
+						if(usedBounds.size.width < usedBounds.size.height) {
+							badgeReferenceSize = usedBounds.size.height;
+							
+							CGFloat minWidth = usedBounds.size.height * MIN_WIDTH;
+							usedBounds.size.width = (usedBounds.size.width < minWidth) ? minWidth : usedBounds.size.width;
+						}
+						
+						else {
+							badgeReferenceSize = usedBounds.size.width;
+							
+							CGFloat minHeight = usedBounds.size.width * MIN_HEIGHT;
+							if(usedBounds.size.height < minHeight) {
+								CGRect missingRect = CGRectMake(0.0, usedBounds.size.height, usedBounds.size.width, (minHeight - usedBounds.size.height));
+								CGContextSetFillColorWithColor(context, rowBG);
+								CGContextFillRect(context, missingRect);
+								
+								usedBounds.size.height = minHeight;
+							}
+						}
 					}
 				}
 				
@@ -148,23 +180,54 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				CGColorRelease(rowBG);
 				CGColorRelease(altRowBG);
 				
-				// Draw the image to the thumbnail request
-				CGContextRef thumbContext = QLThumbnailRequestCreateContext(thumbnail, usedBounds.size, false, NULL);
-				
+				// Create a CGImage
+				CGPDFContextEndPage(context);
 				CGImageRef fullImage = CGBitmapContextCreateImage(context);
 				CGImageRef usedImage = CGImageCreateWithImageInRect(fullImage, usedBounds);
 				CGImageRelease(fullImage);
+				
+				// Draw the image to the thumbnail request
+				CGContextRef thumbContext = QLThumbnailRequestCreateContext(thumbnail, usedBounds.size, false, NULL);
 				CGContextDrawImage(thumbContext, usedBounds, usedImage);
 				CGImageRelease(usedImage);
 				
-				// we no longer need the bitmap data; free
-				char *bitmapData = CGBitmapContextGetData(context);
-				if(bitmapData) {
-					free(bitmapData);
+				// we no longer need the bitmap data; free (malloc'ed by createRGBABitmapContext() )
+				char *contextData = CGBitmapContextGetData(context);
+				if(contextData) {
+					free(contextData);
 				}
-				CFRelease(context);
 				
+				
+				// *****
+				// Draw the CSV badge to the icon
+				NSGraphicsContext *thumbNsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:(void *)thumbContext flipped:NO];
+				[NSGraphicsContext setCurrentContext:thumbNsContext];
+				if(nil != thumbNsContext) {
+					NSString *badgeString = BADGE;
+					CGFloat badgeFontSize = badgeReferenceSize * 0.15;
+					NSFont *badgeFont = [NSFont boldSystemFontOfSize:badgeFontSize];
+					NSColor *badgeColor = [NSColor darkGrayColor];
+					NSShadow *badgeShadow = [[[NSShadow alloc] init] autorelease];
+					[badgeShadow setShadowOffset:NSMakeSize(0.0, 0.0)];
+					[badgeShadow setShadowBlurRadius:badgeFontSize * 0.1];
+					[badgeShadow setShadowColor:[NSColor whiteColor]];
+					
+					// Set attributes and draw
+					NSDictionary *badgeAttributes = [NSDictionary dictionaryWithObjectsAndKeys:badgeFont, NSFontAttributeName,
+																							   badgeColor, NSForegroundColorAttributeName,
+																							   badgeShadow, NSShadowAttributeName, nil];
+					NSSize badgeSize = [badgeString sizeWithAttributes:badgeAttributes];
+					NSRect badgeRect = NSMakeRect((usedBounds.size.width / 2) - (badgeSize.width / 2), 0.25 * badgeFontSize, 0.0, 0.0);
+					badgeRect.size = badgeSize;
+					
+					[badgeString drawWithRect:badgeRect options:NSStringDrawingUsesLineFragmentOrigin attributes:badgeAttributes];
+				}
+				
+				
+				// Clean up
+				CGContextRelease(context);
 				QLThumbnailRequestFlushContext(thumbnail, thumbContext);
+				CGContextRelease(thumbContext);
 			}
 		}
 	}
@@ -210,4 +273,40 @@ static CGContextRef createRGBABitmapContext(CGSize pixelSize)
 	
 	return context;
 }
+
+/*
+static CGContextRef createVectorContext(CGSize pixelSize)
+{
+	CGRect mediaBox = CGRectMake(0.0, 0.0, 0.0, 0.0);
+	mediaBox.size = pixelSize;
+	
+	// allocate needed bytes
+	CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);		// unlimited size; hopefully we won't regret this :)
+	if(NULL == bitmapData) {
+		fprintf(stderr, "Oops, could not allocate mutable data!");
+		return NULL;
+	}
+	
+	// create the context
+	CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(data);
+	CGContextRef context = CGPDFContextCreate(consumer, &mediaBox, NULL);	
+	CGDataConsumerRelease(consumer);
+	
+	// context creation fail
+	if(NULL == context) {
+		free(bitmapData);
+		fprintf(stderr, "Oops, could not create the context!");
+		return NULL;
+	}
+	
+	return context;
+	
+	
+	// Don't forget creating pages
+	// CGPDFContextBeginPage(pdfContext, NULL);
+	// CGPDFContextEndPage(pdfContext);
+	
+	// and release the data
+	// CFRelease(data);
+}	//	*/
 

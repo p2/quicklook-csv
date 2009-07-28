@@ -210,7 +210,9 @@
 			<array>
 				<string>XCToolbarPerspectiveControl</string>
 				<string>NSToolbarSeparatorItem</string>
-				<string>active-combo-popup</string>
+				<string>active-buildstyle-popup</string>
+				<string>active-target-popup</string>
+				<string>active-platform-popup</string>
 				<string>NSToolbarFlexibleSpaceItem</string>
 				<string>buildOrClean</string>
 				<string>build-and-goOrGo</string>
@@ -301,7 +303,7 @@
 							<real>234</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>70 47 1332 831 0 0 1440 878 </string>
+						<string>226 197 1332 831 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -331,7 +333,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EE3A17C0100BB68000B7DD35</string>
+										<string>EE17B2C2101DBC39006F1874</string>
 										<key>history</key>
 										<array>
 											<string>EE77BE260FFEA3AC008B09DE</string>
@@ -345,7 +347,7 @@
 											<string>EE3A178C100BB0C400B7DD35</string>
 											<string>EE3A17BA100BB68000B7DD35</string>
 											<string>EE3A17BB100BB68000B7DD35</string>
-											<string>EE3A17BC100BB68000B7DD35</string>
+											<string>EEBC3453101DBBA8005FF404</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -361,17 +363,6 @@
 											<string>EE77BE6C0FFEB315008B09DE</string>
 											<string>EE77BEC50FFF6266008B09DE</string>
 											<string>EE88310E10015251005590AE</string>
-											<string>EE3A1780100BB09200B7DD35</string>
-											<string>EE3A1781100BB09200B7DD35</string>
-											<string>EE3A1782100BB09200B7DD35</string>
-											<string>EE3A1783100BB09200B7DD35</string>
-											<string>EE3A1784100BB09200B7DD35</string>
-											<string>EE3A1785100BB09200B7DD35</string>
-											<string>EE3A1786100BB09200B7DD35</string>
-											<string>EE3A178E100BB0C400B7DD35</string>
-											<string>EE3A17BD100BB68000B7DD35</string>
-											<string>EE3A17BE100BB68000B7DD35</string>
-											<string>EE3A17BF100BB68000B7DD35</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -387,7 +378,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1076, 785}}</string>
 								<key>RubberWindowFrame</key>
-								<string>70 47 1332 831 0 0 1440 878 </string>
+								<string>226 197 1332 831 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -412,7 +403,7 @@
 										<key>Frame</key>
 										<string>{{10, 27}, {1076, -27}}</string>
 										<key>RubberWindowFrame</key>
-										<string>70 47 1332 831 0 0 1440 878 </string>
+										<string>226 197 1332 831 0 0 1680 1028 </string>
 									</dict>
 									<key>Module</key>
 									<string>XCDetailModule</string>
@@ -494,11 +485,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>EE3A1788100BB09200B7DD35</string>
+				<string>EE17B2BD101DBBCB006F1874</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>EE3A1789100BB09200B7DD35</string>
+				<string>EE17B2BE101DBBCB006F1874</string>
 				<string>EEB3ED3A0FFE2B1100B7462F</string>
-				<string>EE3A178A100BB09200B7DD35</string>
+				<string>EE17B2BF101DBBCB006F1874</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -668,7 +659,7 @@
 	<key>TimeStamp</key>
 	<real>0.0</real>
 	<key>ToolbarDisplayMode</key>
-	<integer>2</integer>
+	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
 	<true/>
 	<key>ToolbarSizeMode</key>
@@ -681,10 +672,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>/Users/pp/Programming/Cocoa/quicklook-csv/QuickLookCSV.xcodeproj</string>
+		<string>/Users/pp/Cocoa/quicklook-csv/QuickLookCSV.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>70 47 1332 831 0 0 1440 878 </string>
+	<string>226 197 1332 831 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
