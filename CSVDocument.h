@@ -14,11 +14,15 @@
 	NSString *separator;
 	NSArray *rows;
 	NSArray *columnKeys;
+	
+	BOOL autoDetectSeparator;
 }
 
 @property (nonatomic, retain) NSString *separator;
 @property (nonatomic, retain) NSArray *rows;
 @property (nonatomic, retain) NSArray *columnKeys;
+
+@property (nonatomic, assign) BOOL autoDetectSeparator;
 
 + (CSVDocument *) csvDoc;
 - (NSUInteger) numRowsFromCSVString:(NSString *)string error:(NSError **)error;

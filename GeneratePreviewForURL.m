@@ -58,6 +58,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	// Parse the data if still interested in the preview
 	if(false == QLPreviewRequestIsCancelled(preview)) {
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
+		csvDoc.autoDetectSeparator = YES;
 		NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
 		
 		
@@ -106,6 +107,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			}
 			[html appendString:@"</html>"];
 			
+			// feed the HTML
 			CFDictionaryRef properties = (CFDictionaryRef)[NSDictionary dictionary];
 			QLPreviewRequestSetDataRepresentation(preview,
 												  (CFDataRef)[html dataUsingEncoding:stringEncoding],
@@ -196,9 +198,10 @@ static char* formatFilesize(float bytes) {
 	while(bytes > 1000) {
 		bytes /= 1024;
 		i++;
-	}
-	if(i > 5) {		// we won't end up here anyway, but let's be sure
-		i = 5;
+		
+		if(i >= 5) {		// we most likely won't end up here, but let's be sure
+			break;
+		}
 	}
 	
 	char formatString[9];

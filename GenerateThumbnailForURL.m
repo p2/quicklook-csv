@@ -55,6 +55,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		NSUInteger numRows = ceilf(THUMB_SIZE / rowHeight);
 		
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
+		csvDoc.autoDetectSeparator = YES;
 		NSUInteger gotRows = [csvDoc numRowsFromCSVString:fileString maxRows:numRows error:NULL];
 		
 		
@@ -67,7 +68,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 			CGContextRef context = createRGBABitmapContext(maxBounds.size);
 			//CGContextRef context = createVectorContext(maxBounds.size);
 			if(context) {
-				CGPDFContextBeginPage(context, NULL);
+				//CGPDFContextBeginPage(context, NULL);
 				
 				// Flip CoreGraphics coordinate system
 				CGContextScaleCTM(context, 1.0, -1.0);
@@ -176,12 +177,13 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 					}
 				}
 				
+				//CGPDFContextEndPage(context);
+				
 				CGColorRelease(borderColor);
 				CGColorRelease(rowBG);
 				CGColorRelease(altRowBG);
 				
 				// Create a CGImage
-				CGPDFContextEndPage(context);
 				CGImageRef fullImage = CGBitmapContextCreateImage(context);
 				CGImageRef usedImage = CGImageCreateWithImageInRect(fullImage, usedBounds);
 				CGImageRelease(fullImage);
@@ -217,7 +219,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 																							   badgeColor, NSForegroundColorAttributeName,
 																							   badgeShadow, NSShadowAttributeName, nil];
 					NSSize badgeSize = [badgeString sizeWithAttributes:badgeAttributes];
-					NSRect badgeRect = NSMakeRect((usedBounds.size.width / 2) - (badgeSize.width / 2), 0.25 * badgeFontSize, 0.0, 0.0);
+					NSRect badgeRect = NSMakeRect((usedBounds.size.width / 2) - (badgeSize.width / 2), 0.2 * badgeFontSize, 0.0, 0.0);
 					badgeRect.size = badgeSize;
 					
 					[badgeString drawWithRect:badgeRect options:NSStringDrawingUsesLineFragmentOrigin attributes:badgeAttributes];
@@ -225,9 +227,9 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				
 				
 				// Clean up
-				CGContextRelease(context);
 				QLThumbnailRequestFlushContext(thumbnail, thumbContext);
 				CGContextRelease(thumbContext);
+				CGContextRelease(context);
 			}
 		}
 	}

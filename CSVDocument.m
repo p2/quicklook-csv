@@ -13,7 +13,7 @@
 
 @implementation CSVDocument
 
-@synthesize separator, rows, columnKeys;
+@synthesize separator, rows, columnKeys, autoDetectSeparator;
 
 
 - (id) init
@@ -58,12 +58,18 @@
 		NSMutableArray *thisRows = [NSMutableArray array];
 		NSMutableArray *thisColumnKeys = [NSMutableArray array];
 		
-		// Check whether the file uses ";" as separator
-		if(![separator isEqualToString:@";"]) {
-			NSUInteger testStringLength = ([string length] > 100) ? 100 : [string length];
+		// Check whether the file uses ";" or TAB as separator by comparing relative occurrences in the first 200 chars
+		if(autoDetectSeparator) {
+			self.separator = @",";
+			
+			NSUInteger testStringLength = ([string length] > 200) ? 200 : [string length];
 			NSString *testString = [string substringToIndex:testStringLength];
-			if([[testString componentsSeparatedByString:@";"] count] > [[testString componentsSeparatedByString:separator] count]) {
-				self.separator = @";";
+			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", nil];
+			
+			for(NSString *s in possSeparators) {
+				if([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:separator] count]) {
+					self.separator = s;
+				}
 			}
 		}
 		
