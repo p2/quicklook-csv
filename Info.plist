@@ -11,7 +11,7 @@
 			<string>QLGenerator</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.csv</string>
+				<string>public.comma-separated-values-text</string>
 				<string>dyn.age80g650</string>
 				<string>dyn.ah62d4rv4ge80g650</string>
 			</array>
