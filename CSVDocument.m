@@ -135,7 +135,9 @@
 						
 						// on to the next column/cell!
 						[currentCellString setString:@""];
-						[scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
+						if (NSNotFound == [separator rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location) {
+							[scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
+						}
 						colIndex++;
 					}
 				}
