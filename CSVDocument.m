@@ -19,7 +19,7 @@
 - (id) init
 {
 	self = [super init];
-	if(nil != self) {
+	if (nil != self) {
 		self.separator = @",";
 	}
 	
@@ -54,20 +54,20 @@
 	NSUInteger numRows = 0;
 	
 	// String is non-empty
-	if([string length] > 0) {
+	if ([string length] > 0) {
 		NSMutableArray *thisRows = [NSMutableArray array];
 		NSMutableArray *thisColumnKeys = [NSMutableArray array];
 		
 		// Check whether the file uses ";" or TAB as separator by comparing relative occurrences in the first 200 chars
-		if(autoDetectSeparator) {
+		if (autoDetectSeparator) {
 			self.separator = @",";
 			
 			NSUInteger testStringLength = ([string length] > 200) ? 200 : [string length];
 			NSString *testString = [string substringToIndex:testStringLength];
 			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", nil];
 			
-			for(NSString *s in possSeparators) {
-				if([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:separator] count]) {
+			for (NSString *s in possSeparators) {
+				if ([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:separator] count]) {
 					self.separator = s;
 				}
 			}
@@ -87,6 +87,7 @@
 		BOOL insideQuotes = NO;				// needed to determine whether we're inside doublequotes
 		BOOL finishedRow = NO;				// used for the inner while loop
 		BOOL isNewColumn = NO;
+		BOOL skipWhitespace = (NSNotFound == [separator rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location);
 		NSMutableDictionary *columns = nil;
 		NSMutableString *currentCellString = [NSMutableString string];
 		NSUInteger colIndex = 0;
@@ -106,7 +107,7 @@
 			while(!finishedRow) {
 				NSString *tempString;
 				NSString *colKey;
-				if([thisColumnKeys count] > colIndex) {
+				if ([thisColumnKeys count] > colIndex) {
 					colKey = [thisColumnKeys objectAtIndex:colIndex];
 					isNewColumn = NO;
 				}
@@ -117,25 +118,25 @@
 				
 				
 				// Scan characters into our string
-				if([scanner scanUpToCharactersFromSet:importantCharactersSet intoString:&tempString] ) {
+				if ([scanner scanUpToCharactersFromSet:importantCharactersSet intoString:&tempString] ) {
 					[currentCellString appendString:tempString];
 				}
 				
 				
 				// found the separator
-				if([scanner scanString:separator intoString:NULL]) {
-					if(insideQuotes) {		// Separator character inside double quotes
+				if ([scanner scanString:separator intoString:NULL]) {
+					if (insideQuotes) {		// Separator character inside double quotes
 						[currentCellString appendString:separator];
 					}
 					else {					// This is a column separating comma
 						[columns setObject:[currentCellString copy] forKey:colKey];
-						if(isNewColumn) {
+						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
 						
 						// on to the next column/cell!
 						[currentCellString setString:@""];
-						if (NSNotFound == [separator rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location) {
+						if (skipWhitespace) {
 							[scanner scanCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:NULL];
 						}
 						colIndex++;
@@ -144,8 +145,8 @@
 				
 				
 				// found a doublequote (")
-				else if([scanner scanString:@"\"" intoString:NULL]) {
-					if(insideQuotes && [scanner scanString:@"\"" intoString:NULL]) { // Replace double - doublequotes with a single doublequote in our string.
+				else if ([scanner scanString:@"\"" intoString:NULL]) {
+					if (insideQuotes && [scanner scanString:@"\"" intoString:NULL]) { // Replace double - doublequotes with a single doublequote in our string.
 						[currentCellString appendString:@"\""]; 
 					}
 					else {					// Start or end of a quoted string.
@@ -155,13 +156,13 @@
 				
 				
 				// found a newline
-				else if([scanner scanCharactersFromSet:newlineCharacterSet intoString:&tempString]) {
-					if(insideQuotes) {		// We're inside quotes - add line break to column text
+				else if ([scanner scanCharactersFromSet:newlineCharacterSet intoString:&tempString]) {
+					if (insideQuotes) {		// We're inside quotes - add line break to column text
 						[currentCellString appendString:tempString];
 					}
 					else {					// End of row
 						[columns setObject:[currentCellString copy] forKey:colKey];
-						if(isNewColumn) {
+						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
 						
@@ -171,9 +172,9 @@
 				
 				
 				// found the end
-				else if([scanner isAtEnd]) {
+				else if ([scanner isAtEnd]) {
 					[columns setObject:[currentCellString copy] forKey:colKey];
-					if(isNewColumn) {
+					if (isNewColumn) {
 						[thisColumnKeys addObject:colKey];
 					}
 					
@@ -183,13 +184,13 @@
 			
 			
 			// one row scanned - add to the lines array
-			if([columns count] > 0) {
+			if ([columns count] > 0) {
 				CSVRowObject *newRow = [CSVRowObject rowFromDict:columns];
 				[thisRows addObject:newRow];
 			}
 			
 			numRows++;
-			if((maxRows > 0) && (numRows > maxRows)) {
+			if ((maxRows > 0) && (numRows > maxRows)) {
 				break;
 			}
 		}
@@ -200,7 +201,7 @@
 	}
 	
 	// empty string
-	else if(nil != error) {
+	else if (nil != error) {
 		NSDictionary *errorDict = [NSDictionary dictionaryWithObject:@"Cannot parse an empty string" forKey:@"userInfo"];
 		*error = [NSError errorWithDomain:NSCocoaErrorDomain code:1 userInfo:errorDict];
 	}
@@ -214,7 +215,7 @@
 #pragma mark Document Properties
 - (BOOL) isFirstColumn:(NSString *)columnKey
 {
-	if((nil != columnKeys) && ([columnKeys count] > 0)) {
+	if ((nil != columnKeys) && ([columnKeys count] > 0)) {
 		return [columnKey isEqualToString:[columnKeys objectAtIndex:0]];
 	}
 	

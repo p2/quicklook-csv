@@ -25,7 +25,7 @@
 {
 	CSVRowObject *row = [CSVRowObject row];
 	
-	if(dict) {
+	if (dict) {
 		row.columns = dict;
 	}
 	
@@ -47,7 +47,7 @@
 {
 	NSString *rowString = nil;
 	
-	if((nil != columnKeys) && (nil != columns)) {
+	if ((nil != columnKeys) && (nil != columns)) {
 		rowString = [[columns objectsForKeys:columnKeys notFoundMarker:@""] componentsJoinedByString:sepString];
 	}
 	
@@ -58,7 +58,7 @@
 {
 	NSString *cellString = nil;
 	
-	if((nil != columnKey) && (nil != columns)) {
+	if ((nil != columnKey) && (nil != columns)) {
 		cellString = [columns objectForKey:columnKey];
 	}
 	
