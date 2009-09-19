@@ -5,7 +5,7 @@
 #import "CSVDocument.h"
 #import "CSVRowObject.h"
 
-#define THUMB_SIZE 256.0
+#define THUMB_SIZE 512.0
 #define ASPECT 0.8			// aspect ratio
 #define NUM_ROWS 18
 #define BADGE @"csv"
