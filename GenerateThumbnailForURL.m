@@ -6,8 +6,8 @@
 #import "CSVRowObject.h"
 
 #define THUMB_SIZE 256.0
-#define ASPECT 0.8			// fraction of width or height
-#define NUM_ROWS 14
+#define ASPECT 0.8			// aspect ratio
+#define NUM_ROWS 18
 #define BADGE @"csv"
 
 static CGContextRef createRGBABitmapContext(CGSize pixelSize);
@@ -146,7 +146,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 					}
 					
 					// adjust the bounds to respect our fixed aspect ratio - portrait
-					if (usedBounds.size.width <= usedBounds.size.height) {
+					if ((usedBounds.size.width > maxBounds.size.width && usedBounds.size.height > maxBounds.size.height) ||
+						(usedBounds.size.width <= usedBounds.size.height)) {
 						badgeMaxSize = usedBounds.size.height;
 						usedBounds.size.width = usedBounds.size.height * ASPECT;
 					}
