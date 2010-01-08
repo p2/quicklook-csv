@@ -210,8 +210,7 @@
 			<array>
 				<string>XCToolbarPerspectiveControl</string>
 				<string>NSToolbarSeparatorItem</string>
-				<string>active-platform-popup</string>
-				<string>active-buildstyle-popup</string>
+				<string>active-combo-popup</string>
 				<string>NSToolbarFlexibleSpaceItem</string>
 				<string>debugger-enable-breakpoints</string>
 				<string>NSToolbarSpaceItem</string>
@@ -318,7 +317,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>EEB3ED3A0FFE2B1100B7462F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Info.plist</string>
+								<string>INSTALL.rtf</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -326,11 +325,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>EEB3ED3B0FFE2B1100B7462F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Info.plist</string>
+										<string>INSTALL.rtf</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EE5853FC10655D84004A4BCD</string>
+										<string>EEC69FD910F7B6ED00A7C7EA</string>
 										<key>history</key>
 										<array>
 											<string>EE8830A610013E43005590AE</string>
@@ -339,13 +338,13 @@
 											<string>EEA3A593104879AB00AA5FA8</string>
 											<string>EE2E1EFE105C37370016E6EB</string>
 											<string>EE2E1EFF105C37370016E6EB</string>
-											<string>EE2E1F00105C37370016E6EB</string>
 											<string>EE2E1F01105C37370016E6EB</string>
 											<string>EE2E1F02105C37370016E6EB</string>
 											<string>EE2E1F03105C37370016E6EB</string>
-											<string>EE2E1F04105C37370016E6EB</string>
 											<string>EE2E1F05105C37370016E6EB</string>
-											<string>EE2E1F14105C38380016E6EB</string>
+											<string>EE58540A1066556C004A4BCD</string>
+											<string>EEC69FD710F7B6ED00A7C7EA</string>
+											<string>EEC69FD810F7B6ED00A7C7EA</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -468,11 +467,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>EE5853FD10655D84004A4BCD</string>
+				<string>EEC69FBB10F7B4E700A7C7EA</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>EE5853FE10655D84004A4BCD</string>
+				<string>EEC69FBC10F7B4E700A7C7EA</string>
 				<string>EEB3ED3A0FFE2B1100B7462F</string>
-				<string>EE5853FF10655D84004A4BCD</string>
+				<string>EEC69FBD10F7B4E700A7C7EA</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
