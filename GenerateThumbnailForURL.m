@@ -8,7 +8,8 @@
 #define THUMB_SIZE 512.0
 #define ASPECT 0.8			// aspect ratio
 #define NUM_ROWS 18
-#define BADGE @"csv"
+#define BADGE_CSV @"csv"
+#define BADGE_TSV @"tab"
 
 static CGContextRef createRGBABitmapContext(CGSize pixelSize);
 //static CGContextRef createVectorContext(CGSize pixelSize)
@@ -51,7 +52,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 	// Parse the data if still interested in the thumbnail
 	if (false == QLThumbnailRequestIsCancelled(thumbnail)) {
 		CGFloat rowHeight = ceilf(THUMB_SIZE / NUM_ROWS);
-		CGFloat fontSize = roundf(0.666 * rowHeight);
+		CGFloat fontSize = roundf(0.666f * rowHeight);
 		
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
 		csvDoc.autoDetectSeparator = YES;
@@ -60,8 +61,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		
 		// Draw an icon if still interested in the thumbnail
 		if ((gotRows > 0) && (false == QLThumbnailRequestIsCancelled(thumbnail))) {
-			CGRect maxBounds = CGRectMake(0.0, 0.0, THUMB_SIZE, THUMB_SIZE);
-			CGRect usedBounds = CGRectMake(0.0, 0.0, 0.0, 0.0);
+			CGRect maxBounds = CGRectMake(0.f, 0.f, THUMB_SIZE, THUMB_SIZE);
+			CGRect usedBounds = CGRectMake(0.f, 0.f, 0.f, 0.f);
 			CGFloat badgeMaxSize = THUMB_SIZE;
 			
 			CGContextRef context = createRGBABitmapContext(maxBounds.size);
@@ -70,27 +71,27 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				//CGPDFContextBeginPage(context, NULL);
 				
 				// Flip CoreGraphics coordinate system
-				CGContextScaleCTM(context, 1.0, -1.0);
+				CGContextScaleCTM(context, 1.f, -1.f);
 				CGContextTranslateCTM(context, 0, -maxBounds.size.height);		
 				
 				// Create colors
-				CGColorRef borderColor = CGColorCreateGenericRGB(0.67, 0.67, 0.67, 1.0);
-				CGColorRef rowBG = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
-				CGColorRef altRowBG = CGColorCreateGenericRGB(0.9, 0.9, 0.9, 1.0);
+				CGColorRef borderColor = CGColorCreateGenericRGB(0.67f, 0.67f, 0.67f, 1.f);
+				CGColorRef rowBG = CGColorCreateGenericRGB(1.f, 1.f, 1.f, 1.f);
+				CGColorRef altRowBG = CGColorCreateGenericRGB(0.9f, 0.9f, 0.9f, 1.f);
 				
-				CGFloat borderWidth = 1.0;
+				CGFloat borderWidth = 1.f;
 				
 				// We use NSGraphicsContext for the strings due to easier string drawing :P
 				NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:(void *)context flipped:YES];
 				[NSGraphicsContext setCurrentContext:nsContext];
 				if (nil != nsContext) {
 					NSFont *myFont = [NSFont systemFontOfSize:fontSize];
-					NSColor *rowTextColor = [NSColor colorWithCalibratedWhite:0.25 alpha:1.0];
+					NSColor *rowTextColor = [NSColor colorWithCalibratedWhite:0.25f alpha:1.f];
 					NSDictionary *stringAttributes = [NSDictionary dictionaryWithObjectsAndKeys:myFont, NSFontAttributeName,
 													  rowTextColor, NSForegroundColorAttributeName, nil];
 					
-					CGFloat textXPadding = 5.0;
-					CGFloat cellX = 0.0;
+					CGFloat textXPadding = 5.f;
+					CGFloat cellX = 0.f;
 					CGFloat maxCellStringWidth;
 					
 					// loop each column
@@ -99,8 +100,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 							break;
 						}
 						
-						CGRect rowRect = CGRectMake(cellX, 0.0, maxBounds.size.width - cellX, rowHeight);
-						maxCellStringWidth = 0.0;
+						CGRect rowRect = CGRectMake(cellX, 0.f, maxBounds.size.width - cellX, rowHeight);
+						maxCellStringWidth = 0.f;
 						BOOL isFirstColumn = [csvDoc isFirstColumn:colKey];
 						BOOL altRow = NO;
 						
@@ -158,7 +159,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 						
 						CGFloat my_height = usedBounds.size.width * ASPECT;
 						if (usedBounds.size.height < my_height) {
-							CGRect missingRect = CGRectMake(0.0, usedBounds.size.height, ceilf(usedBounds.size.width), ceilf(my_height - usedBounds.size.height));
+							CGRect missingRect = CGRectMake(0.f, usedBounds.size.height, ceilf(usedBounds.size.width), ceilf(my_height - usedBounds.size.height));
 							CGContextSetFillColorWithColor(context, rowBG);
 							CGContextFillRect(context, missingRect);
 						}
@@ -192,13 +193,13 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				NSGraphicsContext *thumbNsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:(void *)thumbContext flipped:NO];
 				[NSGraphicsContext setCurrentContext:thumbNsContext];
 				if (nil != thumbNsContext) {
-					NSString *badgeString = BADGE;
-					CGFloat badgeFontSize = ceilf(badgeMaxSize * 0.28);
+					NSString *badgeString = [@"	" isEqualToString:csvDoc.separator] ? BADGE_TSV : BADGE_CSV;
+					CGFloat badgeFontSize = ceilf(badgeMaxSize * 0.28f);
 					NSFont *badgeFont = [NSFont boldSystemFontOfSize:badgeFontSize];
-					NSColor *badgeColor = [NSColor colorWithCalibratedRed:0.05 green:0.25 blue:0.1 alpha:1.0];
+					NSColor *badgeColor = [NSColor colorWithCalibratedRed:0.05f green:0.25f blue:0.1f alpha:1.f];
 					NSShadow *badgeShadow = [[[NSShadow alloc] init] autorelease];
-					[badgeShadow setShadowOffset:NSMakeSize(0.0, 0.0)];
-					[badgeShadow setShadowBlurRadius:badgeFontSize * 0.01];
+					[badgeShadow setShadowOffset:NSMakeSize(0.f, 0.f)];
+					[badgeShadow setShadowBlurRadius:badgeFontSize * 0.01f];
 					[badgeShadow setShadowColor:[NSColor whiteColor]];
 					
 					// Set attributes and draw
@@ -208,8 +209,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 					
 					NSSize badgeSize = [badgeString sizeWithAttributes:badgeAttributes];
 					CGFloat badge_x = (usedBounds.size.width / 2) - (badgeSize.width / 2);
-					CGFloat badge_y = 0.025 * badgeMaxSize;
-					NSRect badgeRect = NSMakeRect(badge_x, badge_y, 0.0, 0.0);
+					CGFloat badge_y = 0.025f * badgeMaxSize;
+					NSRect badgeRect = NSMakeRect(badge_x, badge_y, 0.f, 0.f);
 					badgeRect.size = badgeSize;
 					
 					[badgeString drawWithRect:badgeRect options:NSStringDrawingUsesLineFragmentOrigin attributes:badgeAttributes];
@@ -269,7 +270,7 @@ static CGContextRef createRGBABitmapContext(CGSize pixelSize)
 /*
 static CGContextRef createVectorContext(CGSize pixelSize)
 {
-	CGRect mediaBox = CGRectMake(0.0, 0.0, 0.0, 0.0);
+	CGRect mediaBox = CGRectMake(0.f, 0.f, 0.f, 0.f);
 	mediaBox.size = pixelSize;
 	
 	// allocate needed bytes

@@ -14,18 +14,12 @@
 #import "CSVDocument.h"
 #import "CSVRowObject.h"
 
-#define MAX_ROWS 200
+#define MAX_ROWS 500
 
 static char* htmlReadableFileEncoding(NSStringEncoding stringEncoding);
 static char* humanReadableFileEncoding(NSStringEncoding stringEncoding);
 static char* formatFilesize(float bytes);
 
-
-/* -----------------------------------------------------------------------------
- Generate a preview for file
- 
- This function's job is to create preview for designated file
- ----------------------------------------------------------------------------- */
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
@@ -59,8 +53,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	if (false == QLPreviewRequestIsCancelled(preview)) {
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
 		csvDoc.autoDetectSeparator = YES;
-		NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
 		
+		NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
 		
 		// Create HTML of the data if still interested in the preview
 		if (false == QLPreviewRequestIsCancelled(preview)) {
