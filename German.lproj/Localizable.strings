@@ -9,4 +9,9 @@
 
 "column" = "Spalte";
 "columns" = "Spalten";
+"row" = "Zeile";
+"rows" = "Zeilen";
+"Tab" = "Tab";
+"Comma" = "Komma";
+"Separated" = "getrennt";
 "Only the first %i rows are being displayed" = "Nur die ersten %i Zeilen werden angezeigt";

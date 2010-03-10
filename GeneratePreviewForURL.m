@@ -75,12 +75,25 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				[html appendString:css];
 				[css release];
 			}
-			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%s</b>, %s, <b>%i</b> %@</div><table>",
-									formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]),
-									humanReadableFileEncoding(stringEncoding),
+			
+			// info
+			NSString *separatorDesc = [@"	" isEqualToString:csvDoc.separator] ? @"Tab" :
+										([@"," isEqualToString:csvDoc.separator] ? @"Comma" : csvDoc.separator);
+			NSString *numRows = (numRowsParsed > MAX_ROWS) ?
+									[NSString stringWithFormat:@"%i+", MAX_ROWS] :
+									[NSString stringWithFormat:@"%i", numRowsParsed];
+			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%i</b> %@, <b>%@</b> %@</div>",
 									[csvDoc.columnKeys count],
-									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil)
+									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil),
+									numRows,
+									(1 == numRowsParsed) ? NSLocalizedString(@"row", nil) : NSLocalizedString(@"rows", nil)
 			];
+			[html appendFormat:@"<div class=\"file_info\"><b>%s</b>, %@-%@, %s</div><table>",
+									formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]),
+									NSLocalizedString(separatorDesc, nil),
+									NSLocalizedString(@"Separated", nil),
+									humanReadableFileEncoding(stringEncoding)
+			 ];
 			
 			// add the table rows
 			BOOL altRow = NO;
