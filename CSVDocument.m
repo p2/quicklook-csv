@@ -64,7 +64,7 @@
 			
 			NSUInteger testStringLength = ([string length] > 200) ? 200 : [string length];
 			NSString *testString = [string substringToIndex:testStringLength];
-			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", nil];
+			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", @"|", nil];
 			
 			for (NSString *s in possSeparators) {
 				if ([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:separator] count]) {
@@ -129,7 +129,7 @@
 						[currentCellString appendString:separator];
 					}
 					else {					// This is a column separating comma
-						[columns setObject:[currentCellString copy] forKey:colKey];
+						[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
 						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
@@ -161,7 +161,7 @@
 						[currentCellString appendString:tempString];
 					}
 					else {					// End of row
-						[columns setObject:[currentCellString copy] forKey:colKey];
+						[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
 						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
@@ -173,7 +173,7 @@
 				
 				// found the end
 				else if ([scanner isAtEnd]) {
-					[columns setObject:[currentCellString copy] forKey:colKey];
+					[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
 					if (isNewColumn) {
 						[thisColumnKeys addObject:colKey];
 					}

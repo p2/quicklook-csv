@@ -216,7 +216,6 @@
 				<string>action</string>
 				<string>NSToolbarFlexibleSpaceItem</string>
 				<string>debugger-enable-breakpoints</string>
-				<string>go</string>
 				<string>build-and-go</string>
 				<string>com.apple.ide.PBXToolbarStopButton</string>
 				<string>get-info</string>
@@ -234,6 +233,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -272,6 +273,7 @@
 								<string>089C166AFE841209C02AAC07</string>
 								<string>08FB77AFFE84173DC02AAC07</string>
 								<string>089C167CFE841241C02AAC07</string>
+								<string>EE77BE9B0FFEB3EA008B09DE</string>
 								<string>089C1671FE841209C02AAC07</string>
 								<string>19C28FB6FE9D52B211CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
@@ -280,8 +282,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>22</integer>
-									<integer>21</integer>
+									<integer>3</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -314,14 +316,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>EEB3ED3A0FFE2B1100B7462F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>GenerateThumbnailForURL.m</string>
+								<string>GeneratePreviewForURL.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -329,11 +329,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>EEB3ED3B0FFE2B1100B7462F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>GenerateThumbnailForURL.m</string>
+										<string>GeneratePreviewForURL.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EE009FB31133CE4E00312AD1</string>
+										<string>EE5A62731147AB3600E79E92</string>
 										<key>history</key>
 										<array>
 											<string>EE8830A610013E43005590AE</string>
@@ -341,13 +341,13 @@
 											<string>EEA3A593104879AB00AA5FA8</string>
 											<string>EE2E1EFE105C37370016E6EB</string>
 											<string>EE2E1F01105C37370016E6EB</string>
-											<string>EE2E1F02105C37370016E6EB</string>
-											<string>EE2E1F03105C37370016E6EB</string>
 											<string>EE2E1F05105C37370016E6EB</string>
-											<string>EE3B87DC1112F45A00FE62FB</string>
 											<string>EE009FB01133CE4E00312AD1</string>
-											<string>EE009FB11133CE4E00312AD1</string>
-											<string>EE009FB21133CE4E00312AD1</string>
+											<string>EE5A62561147A10D00E79E92</string>
+											<string>EE5A62571147A10D00E79E92</string>
+											<string>EE5A62581147A10D00E79E92</string>
+											<string>EE5A62721147AB3600E79E92</string>
+											<string>EE5A62591147A10D00E79E92</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -470,11 +470,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>EE009FB41133CE4E00312AD1</string>
+				<string>EE5A625C1147A10D00E79E92</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>EE009FB51133CE4E00312AD1</string>
+				<string>EE5A625D1147A10D00E79E92</string>
 				<string>EEB3ED3A0FFE2B1100B7462F</string>
-				<string>EE009FB61133CE4E00312AD1</string>
+				<string>EE5A625E1147A10D00E79E92</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -649,7 +649,7 @@
 	<key>TimeStamp</key>
 	<real>0.0</real>
 	<key>ToolbarDisplayMode</key>
-	<integer>1</integer>
+	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
 	<true/>
 	<key>ToolbarSizeMode</key>

@@ -78,7 +78,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			
 			// info
 			NSString *separatorDesc = [@"	" isEqualToString:csvDoc.separator] ? @"Tab" :
-										([@"," isEqualToString:csvDoc.separator] ? @"Comma" : csvDoc.separator);
+										([@"," isEqualToString:csvDoc.separator] ? @"Comma" : 
+										 ([@"|" isEqualToString:csvDoc.separator] ? @"Pipe" : csvDoc.separator));
 			NSString *numRows = (numRowsParsed > MAX_ROWS) ?
 									[NSString stringWithFormat:@"%i+", MAX_ROWS] :
 									[NSString stringWithFormat:@"%i", numRowsParsed];
