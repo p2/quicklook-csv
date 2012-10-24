@@ -51,13 +51,12 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 	
 	// Parse the data if still interested in the thumbnail
 	if (false == QLThumbnailRequestIsCancelled(thumbnail)) {
-		CGFloat rowHeight = ceilf(THUMB_SIZE / NUM_ROWS);
-		CGFloat fontSize = roundf(0.666f * rowHeight);
-		
 		CSVDocument *csvDoc = [CSVDocument csvDoc];
 		csvDoc.autoDetectSeparator = YES;
 		NSUInteger gotRows = [csvDoc numRowsFromCSVString:fileString maxRows:NUM_ROWS error:NULL];
 		
+		CGFloat rowHeight = ceilf(THUMB_SIZE / MIN(MAX(4, gotRows), NUM_ROWS));
+		CGFloat fontSize = roundf(0.666 * rowHeight);
 		
 		// Draw an icon if still interested in the thumbnail
 		if ((gotRows > 0) && (false == QLThumbnailRequestIsCancelled(thumbnail))) {
@@ -147,8 +146,9 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 					}
 					
 					// adjust the bounds to respect our fixed aspect ratio - portrait
-					if ((usedBounds.size.width > maxBounds.size.width && usedBounds.size.height > maxBounds.size.height) ||
-						(usedBounds.size.width <= usedBounds.size.height)) {
+					//NSLog(@"%@  is: %.2fx%.2f  -- max: %.2fx%.2f", myURL, usedBounds.size.width, usedBounds.size.height, maxBounds.size.width, maxBounds.size.height);
+					if ((usedBounds.size.width > maxBounds.size.width && usedBounds.size.height > maxBounds.size.height)
+						|| (usedBounds.size.width <= usedBounds.size.height)) {
 						badgeMaxSize = usedBounds.size.height;
 						usedBounds.size.width = usedBounds.size.height * ASPECT;
 					}

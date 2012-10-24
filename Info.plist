@@ -40,6 +40,7 @@
 				<string>public.comma-separated-values-text</string>
 				<string>dyn.age80g650</string>
 				<string>dyn.ah62d4rv4ge80g650</string>
+				<string>dyn.ah62d4um4ge80g650</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>XML</string>
@@ -75,9 +76,9 @@
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1</string>
+	<string>1.2</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.1</string>
+	<string>1.2</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>

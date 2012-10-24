@@ -233,8 +233,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -273,7 +271,7 @@
 								<string>089C166AFE841209C02AAC07</string>
 								<string>08FB77AFFE84173DC02AAC07</string>
 								<string>089C167CFE841241C02AAC07</string>
-								<string>EE77BE9B0FFEB3EA008B09DE</string>
+								<string>8D5B49A704867FD3000E48DA</string>
 								<string>089C1671FE841209C02AAC07</string>
 								<string>19C28FB6FE9D52B211CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
@@ -282,8 +280,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
-									<integer>1</integer>
+									<integer>23</integer>
+									<integer>22</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -316,6 +314,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -333,21 +333,19 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EE5A62731147AB3600E79E92</string>
+										<string>EE8E9E7B1114B36B0092500D</string>
 										<key>history</key>
 										<array>
 											<string>EE8830A610013E43005590AE</string>
 											<string>EE8830A710013E43005590AE</string>
 											<string>EEA3A593104879AB00AA5FA8</string>
 											<string>EE2E1EFE105C37370016E6EB</string>
-											<string>EE2E1F01105C37370016E6EB</string>
 											<string>EE2E1F05105C37370016E6EB</string>
-											<string>EE009FB01133CE4E00312AD1</string>
-											<string>EE5A62561147A10D00E79E92</string>
-											<string>EE5A62571147A10D00E79E92</string>
-											<string>EE5A62581147A10D00E79E92</string>
-											<string>EE5A62721147AB3600E79E92</string>
-											<string>EE5A62591147A10D00E79E92</string>
+											<string>EE309FE610FE851300AADFE8</string>
+											<string>EE8E9E0711147D890092500D</string>
+											<string>EE8E9E0811147D890092500D</string>
+											<string>EE8E9E1211147DC10092500D</string>
+											<string>EE8E9E4A1114AEF10092500D</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -470,11 +468,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>EE5A625C1147A10D00E79E92</string>
+				<string>EE8E9E4C1114AEF10092500D</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>EE5A625D1147A10D00E79E92</string>
+				<string>EE8E9E4D1114AEF10092500D</string>
 				<string>EEB3ED3A0FFE2B1100B7462F</string>
-				<string>EE5A625E1147A10D00E79E92</string>
+				<string>EE8E9E4E1114AEF10092500D</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>

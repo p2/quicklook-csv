@@ -212,8 +212,8 @@ static char* formatFilesize(float bytes) {
 		}
 	}
 	
-	char formatString[9];
-	static char result[10];			// max would be "1023.99 Byte" (12 byte), but that combination should not happen
+	char formatString[10];
+	static char result[11];			// max would be "1023.99 Byte" (12 byte), but that combination should not happen
 	sprintf(formatString, "%s %s", format[i], unit[i]);
 	sprintf(result, formatString, bytes);
 	
