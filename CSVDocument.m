@@ -10,6 +10,8 @@
 #import "CSVDocument.h"
 #import "CSVRowObject.h"
 
+#define AUTODETECT_NUM_FIRST_CHARS 1000
+
 
 @implementation CSVDocument
 
@@ -58,11 +60,11 @@
 		NSMutableArray *thisRows = [NSMutableArray array];
 		NSMutableArray *thisColumnKeys = [NSMutableArray array];
 		
-		// Check whether the file uses ";" or TAB as separator by comparing relative occurrences in the first 200 chars
+		// Check whether the file uses ";" or TAB as separator by comparing relative occurrences in the first AUTODETECT_NUM_FIRST_CHARS chars
 		if (autoDetectSeparator) {
 			self.separator = @",";
 			
-			NSUInteger testStringLength = ([string length] > 200) ? 200 : [string length];
+			NSUInteger testStringLength = ([string length] > AUTODETECT_NUM_FIRST_CHARS) ? AUTODETECT_NUM_FIRST_CHARS : [string length];
 			NSString *testString = [string substringToIndex:testStringLength];
 			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", @"|", nil];
 			
