@@ -64,7 +64,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			NSString *css = [[NSString alloc] initWithContentsOfFile:cssPath encoding:NSUTF8StringEncoding error:NULL];
 			
 			NSString *path = [myURL path];
-			NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+			NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
 			
 			// compose the html
 			NSMutableString *html = [[NSMutableString alloc] initWithString:@"<!DOCTYPE html>\n"];
@@ -82,8 +82,8 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 										 ([@"|" isEqualToString:csvDoc.separator] ? @"Pipe" : csvDoc.separator));
 			NSString *numRows = (numRowsParsed > MAX_ROWS) ?
 									[NSString stringWithFormat:@"%i+", MAX_ROWS] :
-									[NSString stringWithFormat:@"%i", numRowsParsed];
-			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%i</b> %@, <b>%@</b> %@</div>",
+									[NSString stringWithFormat:@"%lu", numRowsParsed];
+			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%lu</b> %@, <b>%@</b> %@</div>",
 									[csvDoc.columnKeys count],
 									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil),
 									numRows,
