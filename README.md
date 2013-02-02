@@ -18,6 +18,12 @@ Source & Issues
 The **source** is hosted on [Google Code][google] and [GitHub][], if you want to contribute please use GitHub and send me a pull request. For **issues** please use [GitHub][issues] as well.
 
 
+File Maker TSV Files
+--------------------
+
+Some hacks were made in earlier versions to support FileMaker tab-separated-value files. Those hacks have been removed in Version 1.3. If this means your files no longer preview correctly, [download version 1.2][1.2] again, but please [let me know][issues].
+
+
 Screenshots
 -----------
 
@@ -28,3 +34,4 @@ Screenshots
 [google]:http://code.google.com/p/quicklook-csv/
 [github]: https://github.com/p2/quicklook-csv
 [issues]: https://github.com/p2/quicklook-csv/issues
+[1.2]: http://code.google.com/p/quicklook-csv/downloads/detail?name=QuickLookCSV%201.2.dmg

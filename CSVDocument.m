@@ -114,7 +114,7 @@
 					isNewColumn = NO;
 				}
 				else {
-					colKey = [NSString stringWithFormat:@"col_%lu", colIndex];
+					colKey = [NSString stringWithFormat:@"col_%lu", (unsigned long)colIndex];
 					isNewColumn = YES;
 				}
 				

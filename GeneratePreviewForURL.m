@@ -83,9 +83,9 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 										  ([@";" isEqualToString:csvDoc.separator] ? @"Semicolon" : csvDoc.separator)));
 			NSString *numRows = (numRowsParsed > MAX_ROWS) ?
 									[NSString stringWithFormat:@"%i+", MAX_ROWS] :
-									[NSString stringWithFormat:@"%lu", numRowsParsed];
+									[NSString stringWithFormat:@"%lu", (unsigned long)numRowsParsed];
 			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%lu</b> %@, <b>%@</b> %@</div>",
-									[csvDoc.columnKeys count],
+									(unsigned long)[csvDoc.columnKeys count],
 									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil),
 									numRows,
 									(1 == numRowsParsed) ? NSLocalizedString(@"row", nil) : NSLocalizedString(@"rows", nil)
