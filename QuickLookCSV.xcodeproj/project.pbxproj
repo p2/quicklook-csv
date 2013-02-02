@@ -215,7 +215,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ 'Release' == $CONFIGURATION ]; then\n    cd ~/Desktop\n    mkdir \"QuickLook CSV\"\n    cd \"QuickLook CSV\"\n    ln -s ~/Library/QuickLook \"Plugins (User)\"\n    ln -s /Library/QuickLook \"Plugins (System Wide)\"\n    \n    mkdir \"Test Files\"\n    cp ${SRCROOT}/Test/* \"Test Files\"\nfi";
+			shellScript = "if [ 'Release' == $CONFIGURATION ]; then\n    cd ~/Desktop\n    mkdir \"QuickLook CSV\"\n\n    cd \"QuickLook CSV\"\n    ln -s ~/Library/QuickLook \"Plugins (User)\"\n    ln -s /Library/QuickLook \"Plugins (System Wide)\"\n\n    cp ${SRCROOT}/INSTALL.rtf ./\n    \n    mkdir \"Test Files\"\n    cp ${SRCROOT}/Test/* \"Test Files\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
