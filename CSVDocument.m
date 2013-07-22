@@ -11,7 +11,7 @@
 #import "CSVRowObject.h"
 
 #define AUTODETECT_NUM_FIRST_CHARS 1000
-
+#define QUOTE_MAGIC_NUM 2
 
 @implementation CSVDocument
 
@@ -54,7 +54,8 @@
 - (NSUInteger) numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error
 {
 	NSUInteger numRows = 0;
-	
+	NSUInteger quoteCounts = 0;
+    
 	// String is non-empty
 	if ([string length] > 0) {
 		NSMutableArray *thisRows = [NSMutableArray array];
@@ -78,7 +79,7 @@
 		// Get newline character set
 		NSMutableCharacterSet *newlineCharacterSet = (id)[NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
 		[newlineCharacterSet formIntersectionWithCharacterSet:[[NSCharacterSet whitespaceCharacterSet] invertedSet]];
-		
+        
 		// Characters where the parser should stop
 		NSMutableCharacterSet *importantCharactersSet = (id)[NSMutableCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"%@\"", separator]];
 		[importantCharactersSet formUnionWithCharacterSet:newlineCharacterSet];
@@ -123,8 +124,8 @@
 				if ([scanner scanUpToCharactersFromSet:importantCharactersSet intoString:&tempString] ) {
 					[currentCellString appendString:tempString];
 				}
-				
-				
+
+
 				// found the separator
 				if ([scanner scanString:separator intoString:NULL]) {
 					if (insideQuotes) {		// Separator character inside double quotes
@@ -143,23 +144,27 @@
 						}
 						colIndex++;
 					}
+                    quoteCounts = 0;
 				}
 				
 				
 				// found a doublequote (")
 				else if ([scanner scanString:@"\"" intoString:NULL]) {
-					if (insideQuotes && [scanner scanString:@"\"" intoString:NULL]) { // Replace double - doublequotes with a single doublequote in our string.
+                    quoteCounts++;
+                    
+					if ((insideQuotes)  && [scanner scanString:@"\"" intoString:NULL]) { // Replace double - doublequotes with a single doublequote in our string.
 						[currentCellString appendString:@"\""]; 
 					}
 					else {					// Start or end of a quoted string.
-						insideQuotes = !insideQuotes;
+                        if (quoteCounts <= QUOTE_MAGIC_NUM)
+                            insideQuotes = !insideQuotes;
 					}
 				}
 				
 				
 				// found a newline
 				else if ([scanner scanCharactersFromSet:newlineCharacterSet intoString:&tempString]) {
-					if (insideQuotes) {		// We're inside quotes - add line break to column text
+					if (quoteCounts > QUOTE_MAGIC_NUM)  {		// We're inside quotes - add line break to column text
 						[currentCellString appendString:tempString];
 					}
 					else {					// End of row
@@ -169,6 +174,7 @@
 						}
 						
 						finishedRow = YES;
+                        quoteCounts = 0;
 					}
 				}
 				
