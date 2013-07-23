@@ -10,25 +10,20 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface CSVDocument : NSObject {
-	NSString *separator;
-	NSArray *rows;
-	NSArray *columnKeys;
-	
-	BOOL autoDetectSeparator;
-}
+/**
+ *  An object representing data in a CSV file.
+ */
+@interface CSVDocument : NSObject
 
-@property (nonatomic, retain) NSString *separator;
-@property (nonatomic, retain) NSArray *rows;
-@property (nonatomic, retain) NSArray *columnKeys;
+@property (copy, nonatomic) NSString *separator;
+@property (copy, nonatomic) NSArray *rows;
+@property (copy, nonatomic) NSArray *columnKeys;
 
 @property (nonatomic, assign) BOOL autoDetectSeparator;
 
-+ (CSVDocument *) csvDoc;
-- (NSUInteger) numRowsFromCSVString:(NSString *)string error:(NSError **)error;
-- (NSUInteger) numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error;
+- (NSUInteger)numRowsFromCSVString:(NSString *)string error:(NSError **)error;
+- (NSUInteger)numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error;
 
-- (BOOL) isFirstColumn:(NSString *)columnKey;
-
+- (BOOL)isFirstColumn:(NSString *)columnKey;
 
 @end

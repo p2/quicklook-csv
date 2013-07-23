@@ -10,16 +10,16 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface CSVRowObject : NSObject {
-	NSDictionary *columns;
-}
+/**
+ *  Data contained in one row of CSV data.
+ */
+@interface CSVRowObject : NSObject
 
-@property (nonatomic, retain) NSDictionary *columns;
+@property (copy, nonatomic) NSDictionary *columns;
 
-+ (CSVRowObject *) row;
-+ (CSVRowObject *) rowFromDict:(NSMutableDictionary *)dict;
++ (CSVRowObject *)newWithDictionary:(NSMutableDictionary *)dict;
 
-- (NSString *) columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString;
-- (NSString *) columnForKey:(NSString *)columnKey;
+- (NSString *)columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString;
+- (NSString *)columnForKey:(NSString *)columnKey;
 
 @end

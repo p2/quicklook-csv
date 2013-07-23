@@ -12,18 +12,13 @@
 
 @implementation CSVRowObject
 
-@synthesize columns;
 
-+ (CSVRowObject *) row
+/**
+ *  Instantiates an object with the given row-dictionary.
+ */
++ (CSVRowObject *)newWithDictionary:(NSMutableDictionary *)dict
 {
-	CSVRowObject *row = [[[CSVRowObject alloc] init] autorelease];
-	return row;
-}
-
-
-+ (CSVRowObject *) rowFromDict:(NSMutableDictionary *)dict
-{
-	CSVRowObject *row = [CSVRowObject row];
+	CSVRowObject *row = [CSVRowObject new];
 	
 	if (dict) {
 		row.columns = dict;
@@ -32,34 +27,26 @@
 	return row;
 }
 
-- (void) dealloc
-{
-	self.columns = nil;
-	
-	[super dealloc];
-}
-#pragma mark -
-
 
 
 #pragma mark Returning Columns
-- (NSString *) columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString
+- (NSString *)columns:(NSArray *)columnKeys combinedByString:(NSString *)sepString
 {
 	NSString *rowString = nil;
 	
-	if ((nil != columnKeys) && (nil != columns)) {
-		rowString = [[columns objectsForKeys:columnKeys notFoundMarker:@""] componentsJoinedByString:sepString];
+	if ((nil != columnKeys) && (nil != _columns)) {
+		rowString = [[_columns objectsForKeys:columnKeys notFoundMarker:@""] componentsJoinedByString:sepString];
 	}
 	
 	return rowString;
 }
 
-- (NSString *) columnForKey:(NSString *)columnKey
+- (NSString *)columnForKey:(NSString *)columnKey
 {
 	NSString *cellString = nil;
 	
-	if ((nil != columnKey) && (nil != columns)) {
-		cellString = [columns objectForKey:columnKey];
+	if ((nil != columnKey) && (nil != _columns)) {
+		cellString = _columns[columnKey];
 	}
 	
 	return cellString;

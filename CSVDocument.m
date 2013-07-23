@@ -15,43 +15,31 @@
 
 @implementation CSVDocument
 
-@synthesize separator, rows, columnKeys, autoDetectSeparator;
 
-
-- (id) init
+- (id)init
 {
-	self = [super init];
-	if (nil != self) {
+	if ((self = [super init])) {
 		self.separator = @",";
 	}
 	
 	return self;
 }
 
-+ (CSVDocument *) csvDoc
-{
-	return [[[CSVDocument alloc] init] autorelease];
-}
-
-- (void) dealloc
-{
-	self.separator = nil;
-	self.rows = nil;
-	self.columnKeys = nil;
-	
-	[super dealloc];
-}
-#pragma mark -
-
 
 
 #pragma mark Parsing from String
-- (NSUInteger) numRowsFromCSVString:(NSString *)string error:(NSError **)error
+/**
+ *  Parse the given string into CSV rows.
+ */
+- (NSUInteger)numRowsFromCSVString:(NSString *)string error:(NSError **)error
 {
 	return [self numRowsFromCSVString:string maxRows:0 error:error];
 }
 
-- (NSUInteger) numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error
+/**
+ *  Parse the given string into CSV rows, up to a given number of rows if "maxRows" is greater than 0.
+ */
+- (NSUInteger)numRowsFromCSVString:(NSString *)string maxRows:(NSUInteger)maxRows error:(NSError **)error
 {
 	NSUInteger numRows = 0;
 	
@@ -61,26 +49,26 @@
 		NSMutableArray *thisColumnKeys = [NSMutableArray array];
 		
 		// Check whether the file uses ";" or TAB as separator by comparing relative occurrences in the first AUTODETECT_NUM_FIRST_CHARS chars
-		if (autoDetectSeparator) {
+		if (_autoDetectSeparator) {
 			self.separator = @",";
 			
 			NSUInteger testStringLength = ([string length] > AUTODETECT_NUM_FIRST_CHARS) ? AUTODETECT_NUM_FIRST_CHARS : [string length];
 			NSString *testString = [string substringToIndex:testStringLength];
-			NSArray *possSeparators = [NSArray arrayWithObjects:@";", @"	", @"|", nil];
+			NSArray *possSeparators = @[@";", @"	", @"|"];
 			
 			for (NSString *s in possSeparators) {
-				if ([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:separator] count]) {
+				if ([[testString componentsSeparatedByString:s] count] > [[testString componentsSeparatedByString:_separator] count]) {
 					self.separator = s;
 				}
 			}
 		}
 		
 		// Get newline character set
-		NSMutableCharacterSet *newlineCharacterSet = (id)[NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
+		NSMutableCharacterSet *newlineCharacterSet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
 		[newlineCharacterSet formIntersectionWithCharacterSet:[[NSCharacterSet whitespaceCharacterSet] invertedSet]];
 		
 		// Characters where the parser should stop
-		NSMutableCharacterSet *importantCharactersSet = (id)[NSMutableCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"%@\"", separator]];
+		NSMutableCharacterSet *importantCharactersSet = [NSMutableCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"%@\"", _separator]];
 		[importantCharactersSet formUnionWithCharacterSet:newlineCharacterSet];
 		
 		
@@ -89,14 +77,14 @@
 		BOOL insideQuotes = NO;				// needed to determine whether we're inside doublequotes
 		BOOL finishedRow = NO;				// used for the inner while loop
 		BOOL isNewColumn = NO;
-		BOOL skipWhitespace = (NSNotFound == [separator rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location);
+		BOOL skipWhitespace = (NSNotFound == [_separator rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location);
 		NSMutableDictionary *columns = nil;
 		NSMutableString *currentCellString = [NSMutableString string];
 		NSUInteger colIndex = 0;
 		
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner setCharactersToBeSkipped:nil];
-		while(![scanner isAtEnd]) {
+		while (![scanner isAtEnd]) {
 			
 			// we'll end up here after every row
 			insideQuotes = NO;
@@ -106,11 +94,11 @@
 			colIndex = 0;
 			
 			// Scan row up to the next terminator
-			while(!finishedRow) {
+			while (!finishedRow) {
 				NSString *tempString;
 				NSString *colKey;
 				if ([thisColumnKeys count] > colIndex) {
-					colKey = [thisColumnKeys objectAtIndex:colIndex];
+					colKey = thisColumnKeys[colIndex];
 					isNewColumn = NO;
 				}
 				else {
@@ -126,12 +114,12 @@
 				
 				
 				// found the separator
-				if ([scanner scanString:separator intoString:NULL]) {
+				if ([scanner scanString:_separator intoString:NULL]) {
 					if (insideQuotes) {		// Separator character inside double quotes
-						[currentCellString appendString:separator];
+						[currentCellString appendString:_separator];
 					}
 					else {					// This is a column separating comma
-						[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
+						columns[colKey] = [currentCellString copy];
 						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
@@ -163,7 +151,7 @@
 						[currentCellString appendString:tempString];
 					}
 					else {					// End of row
-						[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
+						columns[colKey] = [currentCellString copy];
 						if (isNewColumn) {
 							[thisColumnKeys addObject:colKey];
 						}
@@ -175,7 +163,7 @@
 				
 				// found the end
 				else if ([scanner isAtEnd]) {
-					[columns setObject:[[currentCellString copy] autorelease] forKey:colKey];
+					columns[colKey] = [currentCellString copy];
 					if (isNewColumn) {
 						[thisColumnKeys addObject:colKey];
 					}
@@ -187,7 +175,7 @@
 			
 			// one row scanned - add to the lines array
 			if ([columns count] > 0) {
-				CSVRowObject *newRow = [CSVRowObject rowFromDict:columns];
+				CSVRowObject *newRow = [CSVRowObject newWithDictionary:columns];
 				[thisRows addObject:newRow];
 			}
 			
@@ -204,21 +192,20 @@
 	
 	// empty string
 	else if (nil != error) {
-		NSDictionary *errorDict = [NSDictionary dictionaryWithObject:@"Cannot parse an empty string" forKey:@"userInfo"];
+		NSDictionary *errorDict = @{@"userInfo": @"Cannot parse an empty string"};
 		*error = [NSError errorWithDomain:NSCocoaErrorDomain code:1 userInfo:errorDict];
 	}
 	
 	return numRows;
 }
-#pragma mark -
 
 
 
-#pragma mark Document Properties
-- (BOOL) isFirstColumn:(NSString *)columnKey
+#pragma mark - Document Properties
+- (BOOL)isFirstColumn:(NSString *)columnKey
 {
-	if ((nil != columnKeys) && ([columnKeys count] > 0)) {
-		return [columnKey isEqualToString:[columnKeys objectAtIndex:0]];
+	if ((nil != _columnKeys) && ([_columnKeys count] > 0)) {
+		return [columnKey isEqualToString:_columnKeys[0]];
 	}
 	
 	return NO;

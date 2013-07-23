@@ -21,114 +21,115 @@ static char* humanReadableFileEncoding(NSStringEncoding stringEncoding);
 static char* formatFilesize(float bytes);
 
 
+/**
+ *  Generates a preview for the given file.
+ *
+ *  This function parses the CSV and generates an HTML string that can be presented by QuickLook.
+ */
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
-	NSError *theErr = nil;
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSURL *myURL = (NSURL *)url;
-	
-	// Load document data using NSStrings house methods
-	// For huge files, maybe guess file encoding using `file --brief --mime` and use NSFileHandle? Not for now...
-	NSStringEncoding stringEncoding;
-	NSString *fileString = [NSString stringWithContentsOfURL:myURL usedEncoding:&stringEncoding error:&theErr];
-	
-	// We could not open the file, probably unknown encoding; try ISO-8859-1
-	if (nil == fileString) {
-		stringEncoding = NSISOLatin1StringEncoding;
-		fileString = [NSString stringWithContentsOfURL:myURL encoding:stringEncoding error:&theErr];
+	@autoreleasepool {
+		NSError *theErr = nil;
+		NSURL *myURL = (__bridge NSURL *)url;
 		
-		// Still no success, give up
-		if (nil == fileString) {
-			if (nil != theErr) {
-				NSLog(@"Error opening the file: %@", theErr);
-			}
-			
-			[pool release];
-			return noErr;
-		}
-	}
-	
-	
-	// Parse the data if still interested in the preview
-	if (false == QLPreviewRequestIsCancelled(preview)) {
-		CSVDocument *csvDoc = [CSVDocument csvDoc];
-		csvDoc.autoDetectSeparator = YES;
+		// Load document data using NSStrings house methods
+		// For huge files, maybe guess file encoding using `file --brief --mime` and use NSFileHandle? Not for now...
+		NSStringEncoding stringEncoding;
+		NSString *fileString = [NSString stringWithContentsOfURL:myURL usedEncoding:&stringEncoding error:&theErr];
 		
-		NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
-		
-		// Create HTML of the data if still interested in the preview
-		if (false == QLPreviewRequestIsCancelled(preview)) {
-			NSBundle *myBundle = [NSBundle bundleForClass:[CSVDocument class]];
+		// We could not open the file, probably unknown encoding; try ISO-8859-1
+		if (!fileString) {
+			stringEncoding = NSISOLatin1StringEncoding;
+			fileString = [NSString stringWithContentsOfURL:myURL encoding:stringEncoding error:&theErr];
 			
-			NSString *cssPath = [myBundle pathForResource:@"Style" ofType:@"css"];
-			NSString *css = [[NSString alloc] initWithContentsOfFile:cssPath encoding:NSUTF8StringEncoding error:NULL];
-			
-			NSString *path = [myURL path];
-			NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
-			
-			// compose the html
-			NSMutableString *html = [[NSMutableString alloc] initWithString:@"<!DOCTYPE html>\n"];
-			[html appendString:@"<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\"><head>\n"];
-			[html appendFormat:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=%s\" />\n", htmlReadableFileEncoding(stringEncoding)];
-			[html appendString:@"<style>\n"];
-			if (nil != css) {
-				[html appendString:css];
-				[css release];
-			}
-			
-			// info
-			NSString *separatorDesc = [@"	" isEqualToString:csvDoc.separator] ? @"Tab" :
-										([@"," isEqualToString:csvDoc.separator] ? @"Comma" : 
-										 ([@"|" isEqualToString:csvDoc.separator] ? @"Pipe" :
-										  ([@";" isEqualToString:csvDoc.separator] ? @"Semicolon" : csvDoc.separator)));
-			NSString *numRows = (numRowsParsed > MAX_ROWS) ?
-									[NSString stringWithFormat:@"%i+", MAX_ROWS] :
-									[NSString stringWithFormat:@"%lu", (unsigned long)numRowsParsed];
-			[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%lu</b> %@, <b>%@</b> %@</div>",
-									(unsigned long)[csvDoc.columnKeys count],
-									(1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil),
-									numRows,
-									(1 == numRowsParsed) ? NSLocalizedString(@"row", nil) : NSLocalizedString(@"rows", nil)
-			];
-			[html appendFormat:@"<div class=\"file_info\"><b>%s</b>, %@-%@, %s</div><table>",
-									formatFilesize([[fileAttributes objectForKey:NSFileSize] floatValue]),
-									NSLocalizedString(separatorDesc, nil),
-									NSLocalizedString(@"Separated", nil),
-									humanReadableFileEncoding(stringEncoding)
-			 ];
-			
-			// add the table rows
-			BOOL altRow = NO;
-			for (CSVRowObject *row in csvDoc.rows) {
-				[html appendFormat:@"<tr%@><td>", altRow ? @" class=\"alt_row\"" : @""];
-				[html appendString:[row columns:csvDoc.columnKeys combinedByString:@"</td><td>"]];
-				[html appendString:@"</td></tr>\n"];
+			// Still no success, give up
+			if (!fileString) {
+				if (nil != theErr) {
+					NSLog(@"Error opening the file: %@", theErr);
+				}
 				
-				altRow = !altRow;
+				return noErr;
 			}
+		}
+		
+		
+		// Parse the data if still interested in the preview
+		if (false == QLPreviewRequestIsCancelled(preview)) {
+			CSVDocument *csvDoc = [CSVDocument new];
+			csvDoc.autoDetectSeparator = YES;
 			
-			[html appendString:@"</table>\n"];
+			NSUInteger numRowsParsed = [csvDoc numRowsFromCSVString:fileString maxRows:MAX_ROWS error:NULL];
 			
-			// not all rows were parsed, show hint
-			if (numRowsParsed > MAX_ROWS) {
-				NSString *rowsHint = [NSString stringWithFormat:NSLocalizedString(@"Only the first %i rows are being displayed", nil), MAX_ROWS];
-				[html appendFormat:@"<div class=\"truncated_rows\">%@</div>", rowsHint];
+			// Create HTML of the data if still interested in the preview
+			if (false == QLPreviewRequestIsCancelled(preview)) {
+				NSBundle *myBundle = [NSBundle bundleForClass:[CSVDocument class]];
+				
+				NSString *cssPath = [myBundle pathForResource:@"Style" ofType:@"css"];
+				NSString *css = [[NSString alloc] initWithContentsOfFile:cssPath encoding:NSUTF8StringEncoding error:NULL];
+				
+				NSString *path = [myURL path];
+				NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+				
+				// compose the html
+				NSMutableString *html = [[NSMutableString alloc] initWithString:@"<!DOCTYPE html>\n"];
+				[html appendString:@"<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\"><head>\n"];
+				[html appendFormat:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=%s\" />\n", htmlReadableFileEncoding(stringEncoding)];
+				[html appendString:@"<style>\n"];
+				if (nil != css) {
+					[html appendString:css];
+				}
+				
+				// info
+				NSString *separatorDesc = [@"	" isEqualToString:csvDoc.separator] ? @"Tab" :
+				([@"," isEqualToString:csvDoc.separator] ? @"Comma" :
+				 ([@"|" isEqualToString:csvDoc.separator] ? @"Pipe" :
+				  ([@";" isEqualToString:csvDoc.separator] ? @"Semicolon" : csvDoc.separator)));
+				NSString *numRows = (numRowsParsed > MAX_ROWS) ?
+				[NSString stringWithFormat:@"%i+", MAX_ROWS] :
+				[NSString stringWithFormat:@"%lu", (unsigned long)numRowsParsed];
+				[html appendFormat:@"</style></head><body><div class=\"file_info\"><b>%lu</b> %@, <b>%@</b> %@</div>",
+				 (unsigned long)[csvDoc.columnKeys count],
+				 (1 == [csvDoc.columnKeys count]) ? NSLocalizedString(@"column", nil) : NSLocalizedString(@"columns", nil),
+				 numRows,
+				 (1 == numRowsParsed) ? NSLocalizedString(@"row", nil) : NSLocalizedString(@"rows", nil)
+				 ];
+				[html appendFormat:@"<div class=\"file_info\"><b>%s</b>, %@-%@, %s</div><table>",
+				 formatFilesize([fileAttributes[NSFileSize] floatValue]),
+				 NSLocalizedString(separatorDesc, nil),
+				 NSLocalizedString(@"Separated", nil),
+				 humanReadableFileEncoding(stringEncoding)
+				 ];
+				
+				// add the table rows
+				BOOL altRow = NO;
+				for (CSVRowObject *row in csvDoc.rows) {
+					[html appendFormat:@"<tr%@><td>", altRow ? @" class=\"alt_row\"" : @""];
+					[html appendString:[row columns:csvDoc.columnKeys combinedByString:@"</td><td>"]];
+					[html appendString:@"</td></tr>\n"];
+					
+					altRow = !altRow;
+				}
+				
+				[html appendString:@"</table>\n"];
+				
+				// not all rows were parsed, show hint
+				if (numRowsParsed > MAX_ROWS) {
+					NSString *rowsHint = [NSString stringWithFormat:NSLocalizedString(@"Only the first %i rows are being displayed", nil), MAX_ROWS];
+					[html appendFormat:@"<div class=\"truncated_rows\">%@</div>", rowsHint];
+				}
+				[html appendString:@"</html>"];
+				
+				// feed the HTML
+				CFDictionaryRef properties = (__bridge CFDictionaryRef)@{};
+				QLPreviewRequestSetDataRepresentation(preview,
+													  (__bridge CFDataRef)[html dataUsingEncoding:stringEncoding],
+													  kUTTypeHTML,
+													  properties
+													  );
 			}
-			[html appendString:@"</html>"];
-			
-			// feed the HTML
-			CFDictionaryRef properties = (CFDictionaryRef)[NSDictionary dictionary];
-			QLPreviewRequestSetDataRepresentation(preview,
-												  (CFDataRef)[html dataUsingEncoding:stringEncoding],
-												  kUTTypeHTML, 
-												  properties
-												  );
-			[html release];
 		}
 	}
 	
-	// Clean up
-	[pool release];
 	return noErr;
 }
 
@@ -137,7 +138,11 @@ void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)
 }
 
 
-// to be used for the generated HTML
+
+#pragma mark - Output Utilities
+/**
+ *  To be used for the generated HTML.
+ */
 static char* htmlReadableFileEncoding(NSStringEncoding stringEncoding)
 {
 	if (NSUTF8StringEncoding == stringEncoding ||
@@ -204,17 +209,13 @@ static char* formatFilesize(float bytes) {
 	char *format[] = { "%.0f", "%.0f", "%.2f", "%.2f", "%.2f", "%.2f" };
 	char *unit[] = { "Byte", "KB", "MB", "GB", "TB", "PB" };
 	int i = 0;
-	while(bytes > 1000) {
-		bytes /= 1024;
+	while (bytes > 1000) {
+		bytes /= 1000;				// Since OS X 10.7 (or 10.6?) Apple uses "kilobyte" and no longer "Kilobyte" or "kibibyte"
 		i++;
-		
-		if (i >= 5) {		// we most likely won't end up here, but let's be sure
-			break;
-		}
 	}
 	
 	char formatString[10];
-	static char result[11];			// max would be "1023.99 Byte" (12 byte), but that combination should not happen
+	static char result[9];			// longest string can be "999 Byte" or "999.99 GB"
 	sprintf(formatString, "%s %s", format[i], unit[i]);
 	sprintf(result, formatString, bytes);
 	
