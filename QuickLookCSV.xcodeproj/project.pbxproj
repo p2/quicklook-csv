@@ -38,7 +38,6 @@
 		EE801DFA16375DC800090402 /* test.csv */ = {isa = PBXFileReference; lastKnownFileType = text; name = test.csv; path = Test/test.csv; sourceTree = "<group>"; };
 		EE801DFB16375DC800090402 /* testHeight.csv */ = {isa = PBXFileReference; lastKnownFileType = text; name = testHeight.csv; path = Test/testHeight.csv; sourceTree = "<group>"; };
 		EE801DFC16375DC800090402 /* testWidth.csv */ = {isa = PBXFileReference; lastKnownFileType = text; name = testWidth.csv; path = Test/testWidth.csv; sourceTree = "<group>"; };
-		EE801DFD1637611700090402 /* testBig.csv */ = {isa = PBXFileReference; lastKnownFileType = text; name = testBig.csv; path = ../../../Desktop/CSV/testBig.csv; sourceTree = "<group>"; };
 		EE801DFE163763E200090402 /* testMini.csv */ = {isa = PBXFileReference; lastKnownFileType = text; name = testMini.csv; path = Test/testMini.csv; sourceTree = "<group>"; };
 		EE883106100141B9005590AE /* INSTALL.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = INSTALL.rtf; sourceTree = "<group>"; };
 		EE89E06C16BDC64900B7E61A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -104,7 +103,6 @@
 				EE801DFB16375DC800090402 /* testHeight.csv */,
 				EE801DFC16375DC800090402 /* testWidth.csv */,
 				EE801DFE163763E200090402 /* testMini.csv */,
-				EE801DFD1637611700090402 /* testBig.csv */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
