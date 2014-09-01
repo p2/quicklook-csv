@@ -167,6 +167,9 @@ static char* htmlReadableFileEncoding(NSStringEncoding stringEncoding)
 	   NSUTF32LittleEndianStringEncoding == stringEncoding) {
 		return "utf-32";
 	}
+	if (NSShiftJISStringEncoding == stringEncoding) {
+		return "shift_jis";
+	}
 	
 	return "utf-8";
 }
@@ -195,6 +198,9 @@ static char* humanReadableFileEncoding(NSStringEncoding stringEncoding)
 	   NSUTF32BigEndianStringEncoding == stringEncoding ||
 	   NSUTF32LittleEndianStringEncoding == stringEncoding) {
 		return "UTF-32";
+	}
+	if (NSShiftJISStringEncoding == stringEncoding) {
+		return "Shift_JIS";
 	}
 	
 	return "UTF-8";
