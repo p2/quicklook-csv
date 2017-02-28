@@ -38,3 +38,9 @@ Screenshots
 [github]: https://github.com/p2/quicklook-csv
 [issues]: https://github.com/p2/quicklook-csv/issues
 [1.2]: https://github.com/p2/quicklook-csv/releases/tag/1.2
+
+
+License
+-------
+
+This work is [Apache 2](./LICENSE.txt) licensed: [NOTICE.txt](./NOTICE.txt).

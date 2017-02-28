@@ -1,0 +1,4 @@
+QuickLookCSV
+Copyright 2009-2017 Pascal Pfiffner
+
+This product includes software developed by Pascal Pfiffner which is freely available on [github.com/p2](https://github.com/p2/quicklook-csv).
