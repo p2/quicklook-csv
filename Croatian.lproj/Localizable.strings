@@ -1,0 +1,17 @@
+/* 
+   Localized.strings
+   QuickLookCSV
+
+   Created by Pascal Pfiffner on 03.07.09.
+   This sourcecode is released under the Apache License, Version 2.0
+   http://www.apache.org/licenses/LICENSE-2.0.html 
+ */
+
+"column" = "stupac";
+"columns" = "stupaca";
+"row" = "redak";
+"rows" = "redaka";
+"Tab" = "tabulatorom";
+"Comma" = "zarezom";
+"Separated" = "odvojeni";
+"Only the first %i rows are being displayed" = "Prikazuje se samo prvih %i redaka";
